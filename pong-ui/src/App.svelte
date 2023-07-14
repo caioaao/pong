@@ -1,5 +1,7 @@
 <script lang="ts">
+	import Ball from "./lib/Ball.svelte";
 	import GameScene from "./lib/GameScene.svelte";
+	import Pad from "./lib/Pad.svelte";
 
 	let padPosX = 50;
 
@@ -17,6 +19,9 @@
 	}
 </script>
 
-<GameScene padPos={{ x: padPosX, y: 10 }} />
+<GameScene>
+	<Pad x={padPosX} y={10} viewportSize={600} />
+	<Ball x={50} y={50} viewportSize={600} />
+</GameScene>
 
 <svelte:window on:keydown|preventDefault={onKeyDown} />
