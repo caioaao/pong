@@ -4,6 +4,7 @@
 	import Pad from "./lib/Pad.svelte";
 
 	let padPosX = 50;
+	const padThickness = 2;
 
 	function onKeyDown(e: KeyboardEvent) {
 		switch (e.code) {
@@ -20,7 +21,13 @@
 </script>
 
 <GameScene>
-	<Pad x={padPosX} y={10} viewportSize={600} />
+	<Pad height={padThickness} x={padPosX} y={10} viewportSize={600} />
+	<Pad
+		height={padThickness}
+		x={50}
+		y={90 + padThickness}
+		viewportSize={600}
+	/>
 	<Ball x={50} y={50} viewportSize={600} />
 </GameScene>
 
