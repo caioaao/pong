@@ -21,10 +21,12 @@
 		switch (e.code) {
 			case "ArrowLeft":
 			case "a":
+				e.preventDefault();
 				padPosX = Math.max(10, padPosX - 5);
 				break;
 			case "ArrowRight":
 			case "d":
+				e.preventDefault();
 				padPosX = Math.min(90, padPosX + 5);
 				break;
 		}
@@ -42,4 +44,4 @@
 	<Ball x={50} y={50} viewportSize={600} />
 </GameScene>
 
-<svelte:window on:keydown|preventDefault={onKeyDown} />
+<svelte:window on:keydown={onKeyDown} />
