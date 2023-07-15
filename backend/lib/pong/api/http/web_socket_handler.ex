@@ -1,4 +1,4 @@
-defmodule Backend.Http.WebSocketHandler do
+defmodule Pong.Api.Http.WebSocketHandler do
   @behaviour :cowboy_websocket
 
   def init(request, _state) do
@@ -7,7 +7,7 @@ defmodule Backend.Http.WebSocketHandler do
   end
 
   def websocket_init(state) do
-    Registry.Backend.App
+    Registry.Pong.Api.App
     |> Registry.register(state.registry_key, {})
 
     {:ok, state}
@@ -17,7 +17,7 @@ defmodule Backend.Http.WebSocketHandler do
     payload = Jason.decode!(json)
     message = payload["data"]["message"]
 
-    Registry.Backend.App
+    Registry.Pong.Api.App
     |> Registry.dispatch(state.registry_key, fn entries ->
       for {pid, _} <- entries do
         if pid != self() do

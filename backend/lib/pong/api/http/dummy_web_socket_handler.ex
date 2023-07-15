@@ -1,4 +1,4 @@
-defmodule Backend.Http.DummyWebSocketHandler do
+defmodule Pong.Api.Http.DummyWebSocketHandler do
   @behaviour :cowboy_websocket
   require Logger
   require Jason
@@ -37,7 +37,7 @@ defmodule Backend.Http.DummyWebSocketHandler do
 
   defp reply_with_game_state(s, state) do
     s
-    |> Backend.Http.Encode.state_to_wire()
+    |> Pong.Api.Http.Encode.state_to_wire()
     |> case do
       {:ok, payload} ->
         {:reply, {:text, payload}, state}

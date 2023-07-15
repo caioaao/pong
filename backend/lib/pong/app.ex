@@ -1,4 +1,4 @@
-defmodule Backend.App do
+defmodule Pong.App do
   use Application
   require Logger
 
@@ -6,7 +6,7 @@ defmodule Backend.App do
     children = [
       Plug.Cowboy.child_spec(
         scheme: :http,
-        plug: Backend.Http.Router,
+        plug: Pong.Api.Http.Router,
         options: [
           dispatch: dispatch(),
           port: 4000
@@ -14,7 +14,7 @@ defmodule Backend.App do
       ),
       Registry.child_spec(
         keys: :duplicate,
-        name: Registry.Backend.App
+        name: Registry.Pong.App
       )
     ]
 
@@ -29,9 +29,9 @@ defmodule Backend.App do
     [
       {:_,
        [
-         {"/ws/dummy", Backend.Http.DummyWebSocketHandler, []},
-         {"/ws/[...]", Backend.Http.WebSocketHandler, []},
-         {:_, Plug.Cowboy.Handler, {Backend.Http.Router, []}}
+         {"/ws/dummy", Pong.Api.Http.DummyWebSocketHandler, []},
+         {"/ws/[...]", Pong.Api.Http.WebSocketHandler, []},
+         {:_, Plug.Cowboy.Handler, {Pong.Api.Http.Router, []}}
        ]}
     ]
   end

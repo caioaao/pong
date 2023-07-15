@@ -1,4 +1,4 @@
-defmodule Backend.Http.Router do
+defmodule Pong.Api.Http.Router do
   use Plug.Router
 
   plug(Plug.Static,

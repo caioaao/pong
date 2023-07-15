@@ -1,5 +1,5 @@
-defmodule Backend.Engine.Point do
-  alias Backend.Engine.{Vector}
+defmodule Pong.Engine.Point do
+  alias Pong.Engine.{Vector}
 
   @type t() :: {number(), number()}
 

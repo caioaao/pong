@@ -1,4 +1,4 @@
-defmodule Backend.Engine.Vector do
+defmodule Pong.Engine.Vector do
   @type t() :: {number(), number()}
 
   @spec scale(t(), number()) :: t()

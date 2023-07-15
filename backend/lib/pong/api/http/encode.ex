@@ -1,6 +1,6 @@
-defmodule Backend.Http.Encode do
+defmodule Pong.Api.Http.Encode do
   require Jason
-  @spec state_to_wire(Backend.Game.State.t()) :: {:ok, String.t()} | {:error, any}
+  @spec state_to_wire(Pong.Core.GameState.t()) :: {:ok, String.t()} | {:error, any}
   def state_to_wire(s) do
     s
     |> update_in([:ball, :pos], &prepare_xy_to_encode/1)
