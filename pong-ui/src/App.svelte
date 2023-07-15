@@ -1,7 +1,18 @@
 <script lang="ts">
+	import { onMount } from "svelte";
 	import Ball from "./lib/Ball.svelte";
 	import GameScene from "./lib/GameScene.svelte";
 	import Pad from "./lib/Pad.svelte";
+	import store from "./lib/ws-store";
+
+	let msg: string;
+
+	onMount(() => {
+		store.subscribe((newMsg: string) => {
+			msg = newMsg;
+			console.log({ msg });
+		});
+	});
 
 	let padPosX = 50;
 	const padThickness = 2;
