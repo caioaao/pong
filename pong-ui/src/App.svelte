@@ -3,15 +3,11 @@
 	import Ball from "./lib/Ball.svelte";
 	import GameScene from "./lib/GameScene.svelte";
 	import Pad from "./lib/Pad.svelte";
-	import store from "./lib/ws-store";
-
-	let msg: string;
+	import { connectToBackend } from "./lib/ws";
 
 	onMount(() => {
-		store.subscribe((newMsg: string) => {
-			msg = newMsg;
-			console.log({ msg });
-		});
+		const socket = connectToBackend("ws://localhost:4000/ws/dummy");
+		return () => socket.close();
 	});
 
 	let padPosX = 50;

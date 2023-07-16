@@ -19,6 +19,7 @@
     "vite": "^4.4.0"
   },
   "dependencies": {
-    "svelte-language-server": "^0.15.15"
+    "svelte-language-server": "^0.15.15",
+    "zod": "^3.21.4"
   }
 }
