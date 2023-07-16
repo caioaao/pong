@@ -7,14 +7,18 @@
 
 	let x: number;
 	let y: number;
+	let width: number;
+	let height: number;
 
 	onMount(() => {
 		gameStateStore.subscribe(({ player2Pad }) => {
 			console.log({ player2Pad });
-			x = player2Pad.pos.x;
-			y = player2Pad.pos.y;
+			x = player2Pad.shape.center.x;
+			y = player2Pad.shape.center.y;
+			width = player2Pad.shape.width;
+			height = player2Pad.shape.height;
 		});
 	});
 </script>
 
-<Pad {x} {y} {viewportSize} />
+<Pad {x} {y} {width} {height} {viewportSize} />

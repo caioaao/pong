@@ -10,15 +10,7 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
   def websocket_init(_state) do
     Process.send(self(), :tick, [])
 
-    {:ok,
-     %{
-       game_state: %{
-         ball: %{pos: {50, 50}, velocity: {0, 0}},
-         player1_pad: %{pos: {50, 20}},
-         player2_pad: %{pos: {50, 80}},
-         score: {0, 0}
-       }
-     }}
+    {:ok, %{game_state: Pong.Core.GameState.new()}}
   end
 
   def websocket_handle({:text, msg}, state) do

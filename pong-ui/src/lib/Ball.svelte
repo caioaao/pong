@@ -4,15 +4,16 @@
 	import { gameStateStore } from "./game-state-store";
 
 	export let viewportSize: number;
-	let x: number, y: number;
+	let x: number, y: number, radius: number;
 
 	onMount(() => {
 		gameStateStore.subscribe(({ ball }) => {
 			console.log({ ball });
-			x = ball.pos.x;
-			y = ball.pos.y;
+			x = ball.shape.center.x;
+			y = ball.shape.center.y;
+			radius = ball.shape.radius;
 		});
 	});
 </script>
 
-<Ball {x} {y} {viewportSize} />
+<Ball {x} {y} {radius} {viewportSize} />

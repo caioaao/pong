@@ -3,10 +3,10 @@ defmodule Pong.Api.Http.Encode do
   @spec state_to_wire(Pong.Core.GameState.t()) :: {:ok, String.t()} | {:error, any}
   def state_to_wire(s) do
     s
-    |> update_in([:ball, :pos], &prepare_xy_to_encode/1)
+    |> update_in([:ball, :shape, :center], &prepare_xy_to_encode/1)
     |> update_in([:ball, :velocity], &prepare_xy_to_encode/1)
-    |> update_in([:player1_pad, :pos], &prepare_xy_to_encode/1)
-    |> update_in([:player2_pad, :pos], &prepare_xy_to_encode/1)
+    |> update_in([:player1_pad, :shape, :center], &prepare_xy_to_encode/1)
+    |> update_in([:player2_pad, :shape, :center], &prepare_xy_to_encode/1)
     |> update_in([:score], fn {a, b} -> %{player1: a, player2: b} end)
     |> Jason.encode()
   end

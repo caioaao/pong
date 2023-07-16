@@ -12,8 +12,11 @@ const pointSchema = z.object({
 	y: z.number(),
 });
 
-const ballStateSchema = z.object({ pos: pointSchema, velocity: vectorSchema })
-const playerPadSchema = z.object({ pos: pointSchema })
+const circleSchema = z.object({ center: pointSchema, radius: z.number() })
+const rectangleSchema = z.object({ center: pointSchema, width: z.number(), height: z.number() })
+
+const ballStateSchema = z.object({ shape: circleSchema, velocity: vectorSchema })
+const playerPadSchema = z.object({ shape: rectangleSchema })
 const scoreSchema = z.object({ player1: z.number(), player2: z.number() })
 
 const wireGameStateSchema = z.object({

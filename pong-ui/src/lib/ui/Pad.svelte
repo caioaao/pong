@@ -4,9 +4,8 @@
 	export let x: number;
 	export let y: number;
 	export let viewportSize: number;
-
-	export let width = 20;
-	export let height = 2;
+	export let width: number;
+	export let height: number;
 
 	$: scaledWidth = scale(viewportSize, width);
 	$: scaledHeight = scale(viewportSize, height);
