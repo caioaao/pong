@@ -12,7 +12,7 @@
 	$: scaledHeight = scale(viewportSize, height);
 
 	$: left = scale(viewportSize, x) - scaledWidth / 2;
-	$: bottom = scale(viewportSize, y) - scaledHeight;
+	$: bottom = scale(viewportSize, y) - scaledHeight / 2;
 </script>
 
 <div
