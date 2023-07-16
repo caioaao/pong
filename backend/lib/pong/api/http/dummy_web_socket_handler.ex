@@ -13,10 +13,10 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
     {:ok,
      %{
        game_state: %{
-         ball: %{pos: {10, 3}, velocity: {0, 0}},
-         player1_pad: %{pos: {43, 20}},
-         player2_pad: %{pos: {32, 90}},
-         score: {32, 2}
+         ball: %{pos: {50, 50}, velocity: {0, 0}},
+         player1_pad: %{pos: {50, 20}},
+         player2_pad: %{pos: {50, 80}},
+         score: {0, 0}
        }
      }}
   end
