@@ -1,26 +1,18 @@
 <script lang="ts">
-	import { scale } from "./utils";
+	import { onMount } from "svelte";
+	import Ball from "./ui/Ball.svelte";
+	import { gameStateStore } from "./game-state-store";
 
-	export let x: number, y: number, viewportSize: number;
-	export let radius = 5;
+	export let viewportSize: number;
+	let x: number, y: number;
 
-	$: scaledRadius = scale(viewportSize, radius);
-	$: left = scale(viewportSize, x) - scaledRadius;
-	$: bottom = scale(viewportSize, y) - scaledRadius;
+	onMount(() => {
+		gameStateStore.subscribe(({ ball }) => {
+			console.log({ ball });
+			x = ball.pos.x;
+			y = ball.pos.y;
+		});
+	});
 </script>
 
-<div
-	class="ball"
-	style="width: {scaledRadius * 2}px; 
-		height: {scaledRadius * 2}px;
-		left:{left}px;
-		bottom: {bottom}px;
-		border-radius: {scaledRadius}px"
-/>
-
-<style>
-	.ball {
-		position: absolute;
-		background-color: white;
-	}
-</style>
+<Ball {x} {y} {viewportSize} />

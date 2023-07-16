@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { scale } from "./utils";
+	import { scale } from "../utils";
 
 	export let x: number;
 	export let y: number;

@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import Ball from "./lib/Ball.svelte";
+	import Player1Pad from "./lib/Player1Pad.svelte";
+	import Player2Pad from "./lib/Player2Pad.svelte";
 	import GameScene from "./lib/GameScene.svelte";
-	import Pad from "./lib/Pad.svelte";
 	import { connectToBackend } from "./lib/ws";
 
 	onMount(() => {
@@ -11,7 +12,6 @@
 	});
 
 	let padPosX = 50;
-	const padThickness = 2;
 
 	function onKeyDown(e: KeyboardEvent) {
 		switch (e.code) {
@@ -30,14 +30,9 @@
 </script>
 
 <GameScene>
-	<Pad height={padThickness} x={padPosX} y={10} viewportSize={600} />
-	<Pad
-		height={padThickness}
-		x={50}
-		y={90 + padThickness}
-		viewportSize={600}
-	/>
-	<Ball x={50} y={50} viewportSize={600} />
+	<Player1Pad viewportSize={600} />
+	<Player2Pad viewportSize={600} />
+	<Ball viewportSize={600} />
 </GameScene>
 
 <svelte:window on:keydown={onKeyDown} />
