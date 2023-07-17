@@ -9,9 +9,9 @@
 	onMount(() => {
 		gameStateStore.subscribe(({ ball }) => {
 			console.log({ ball });
-			x = ball.shape.center.x;
-			y = ball.shape.center.y;
-			radius = ball.shape.radius;
+			x = ball.geometry.center.x;
+			y = ball.geometry.center.y;
+			radius = ball.geometry.radius;
 		});
 	});
 </script>

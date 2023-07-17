@@ -13,10 +13,10 @@
 	onMount(() => {
 		gameStateStore.subscribe(({ player2Pad }) => {
 			console.log({ player2Pad });
-			x = player2Pad.shape.center.x;
-			y = player2Pad.shape.center.y;
-			width = player2Pad.shape.width;
-			height = player2Pad.shape.height;
+			x = player2Pad.geometry.center.x;
+			y = player2Pad.geometry.center.y;
+			width = player2Pad.geometry.width;
+			height = player2Pad.geometry.height;
 		});
 	});
 </script>
