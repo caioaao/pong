@@ -1,5 +1,5 @@
 defmodule Pong.Core.Rectangle do
-  alias Pong.Core.{Point, LineSegment, Circle}
+  alias Pong.Core.{Point, LineSegment, Circle, Vector}
 
   @type t() :: %{center: Point.t(), width: number(), height: number()}
 
@@ -34,5 +34,20 @@ defmodule Pong.Core.Rectangle do
   @spec intersects_circle?(t(), Circle.t()) :: boolean()
   def intersects_circle?(rect, circle) do
     Circle.intersects_rectangle?(circle, rect)
+  end
+
+  @spec move(t(), Vector.t()) :: t()
+  def move(rect, vec) do
+    update_in(rect, [:center], &Vector.add(&1, vec))
+  end
+
+  @spec ensure_inside_viewport(t(), number(), number()) :: t()
+  def ensure_inside_viewport(rect, viewportWidth, viewportHeight) do
+    update_in(rect, [:center], fn {x, y} ->
+      {
+        x |> min(viewportWidth - rect[:width] / 2) |> max(rect[:width] / 2),
+        y |> min(viewportHeight - rect[:height] / 2) |> max(rect[:height] / 2)
+      }
+    end)
   end
 end
