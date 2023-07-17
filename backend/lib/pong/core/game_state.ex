@@ -1,11 +1,10 @@
 defmodule Pong.Core.GameState do
-  alias Pong.Core.{Circle, PlayerPad, Vector, Viewport}
+  alias Pong.Core.{Circle, PlayerPad, Vector, Viewport, Ball}
 
   @initial_ball_velocity {25, 5}
 
-  @type ball() :: %{geometry: Circle.t(), velocity: Pong.Core.Vector.t()}
   @type t() :: %{
-          ball: ball(),
+          ball: Ball.t(),
           player1_pad: PlayerPad.t(),
           player2_pad: PlayerPad.t(),
           score: {integer(), integer()},
