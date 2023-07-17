@@ -15,7 +15,8 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
   end
 
   def websocket_init(_state) do
-    Process.send(self(), :tick, [])
+    Process.send(self(), :tick_state, [])
+    Process.send(self(), :tick_cmd, [])
 
     {:ok, %{game_state: Pong.Core.GameState.new()}}
   end
@@ -24,11 +25,17 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
     {:reply, {:text, msg}, state}
   end
 
-  def websocket_info(:tick, %{game_state: game_state} = state) do
-    Process.send_after(self(), :tick, 1000)
-    Logger.info("sending msg")
+  def websocket_info(:tick_cmd, %{game_state: game_state} = state) do
+    Process.send_after(self(), :tick_cmd, 1000)
     cmd = Enum.random(@possible_commands)
     game_state = Pong.Core.GameState.process_command(game_state, cmd)
+
+    {:ok, Map.put(state, :game_state, game_state)}
+  end
+
+  def websocket_info(:tick_state, %{game_state: game_state} = state) do
+    Process.send_after(self(), :tick_state, div(1000, 60))
+    game_state = Pong.Core.GameState.update(game_state, div(1000, 60))
 
     reply_with_game_state(game_state, Map.put(state, :game_state, game_state))
   end
