@@ -7,9 +7,15 @@
 	import Score from "./lib/Score.svelte";
 	import { connectToBackend } from "./lib/ws";
 
-	onMount(() => {
+	let socket = new Promise<WebSocket>((resolve) => {
 		const socket = connectToBackend("ws://localhost:4000/ws/dummy");
-		return () => socket.close();
+		socket.addEventListener("open", () => {
+			resolve(socket);
+		});
+	});
+
+	onMount(() => {
+		return () => socket.then((socket) => socket.close());
 	});
 
 	let padPosX = 50;

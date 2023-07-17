@@ -12,7 +12,6 @@
 
 	onMount(() => {
 		gameStateStore.subscribe(({ player1Pad }) => {
-			console.log({ player1Pad });
 			x = player1Pad.geometry.center.x;
 			y = player1Pad.geometry.center.y;
 			width = player1Pad.geometry.width;

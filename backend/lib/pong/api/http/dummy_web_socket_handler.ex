@@ -22,7 +22,10 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
   end
 
   def websocket_handle({:text, msg}, state) do
-    {:reply, {:text, msg}, state}
+    case msg do
+      "" -> {:ok, state}
+      msg -> {:reply, {:text, msg}, state}
+    end
   end
 
   def websocket_info(:tick_cmd, %{game_state: game_state} = state) do

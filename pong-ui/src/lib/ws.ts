@@ -42,15 +42,28 @@ function parseGameStateFromWire(wire: string) {
 
 export function connectToBackend(url: string): WebSocket {
 	const socket = new WebSocket(url);
+	let heartbeatTicker: number;
 
 	socket.addEventListener(
 		'open', function() {
+			heartbeatTicker = setInterval(() => socket.send(""), 3000);
 			console.log('opened')
+		}
+	);
+	socket.addEventListener(
+		'close', function() {
+			clearInterval(heartbeatTicker);
+			console.log('closed')
 		}
 	);
 
 	socket.addEventListener('message', function(event) {
-		gameStateStore.set(parseGameStateFromWire(event.data));
+		try {
+			gameStateStore.set(parseGameStateFromWire(event.data));
+		} catch (err) {
+			console.error({ rawMessage: event.data })
+			throw (err)
+		}
 	})
 
 	return socket;
