@@ -3,6 +3,13 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
   require Logger
   require Jason
 
+  @possible_commands [
+    {:move_left, :player1},
+    {:move_left, :player2},
+    {:move_right, :player1},
+    {:move_right, :player2}
+  ]
+
   def init(request, state) do
     {:cowboy_websocket, request, state}
   end
@@ -20,7 +27,10 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
   def websocket_info(:tick, %{game_state: game_state} = state) do
     Process.send_after(self(), :tick, 1000)
     Logger.info("sending msg")
-    reply_with_game_state(game_state, state)
+    cmd = Enum.random(@possible_commands)
+    game_state = Pong.Core.GameState.process_command(game_state, cmd)
+
+    reply_with_game_state(game_state, Map.put(state, :game_state, game_state))
   end
 
   def websocket_info(_, state) do

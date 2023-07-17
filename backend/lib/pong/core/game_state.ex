@@ -19,10 +19,10 @@ defmodule Pong.Core.GameState do
   def new() do
     %{
       ball: %{geometry: %{radius: 5, center: {50, 50}}, velocity: {0, 0}},
-      player1_pad: %{geometry: %{center: {50, 20}, width: 20, height: 2}},
-      player2_pad: %{geometry: %{center: {50, 80}, width: 20, height: 2}},
+      player1_pad: %{geometry: %{center: {50, 10}, width: 20, height: 2}},
+      player2_pad: %{geometry: %{center: {50, 90}, width: 20, height: 2}},
       score: {0, 0},
-      paused?: true
+      paused?: false
     }
   end
 
