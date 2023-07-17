@@ -4,6 +4,7 @@
 	import Player1Pad from "./lib/Player1Pad.svelte";
 	import Player2Pad from "./lib/Player2Pad.svelte";
 	import GameScene from "./lib/GameScene.svelte";
+	import Score from "./lib/Score.svelte";
 	import { connectToBackend } from "./lib/ws";
 
 	onMount(() => {
@@ -32,7 +33,9 @@
 <main>
 	<header>
 		<h1>Pong</h1>
-		<div class="score">0 - 0</div>
+		<div class="score">
+			<Score />
+		</div>
 	</header>
 	<GameScene>
 		<Player1Pad viewportSize={600} />
@@ -65,9 +68,5 @@
 	header .score {
 		flex: 1;
 		text-align: right;
-		font-weight: 900;
-		font-family: Avenir, Montserrat, Corbel, "URW Gothic",
-			source-sans-pro, sans-serif;
-		font-size: 3.2em;
 	}
 </style>
