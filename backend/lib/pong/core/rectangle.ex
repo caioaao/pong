@@ -1,5 +1,5 @@
 defmodule Pong.Core.Rectangle do
-  alias Pong.Core.{Point, LineSegment, Circle, Vector}
+  alias Pong.Core.{Point, LineSegment, Circle, Vector, Viewport}
 
   @type t() :: %{center: Point.t(), width: number(), height: number()}
 
@@ -41,12 +41,12 @@ defmodule Pong.Core.Rectangle do
     update_in(rect, [:center], &Vector.add(&1, vec))
   end
 
-  @spec ensure_inside_viewport(t(), number(), number()) :: t()
-  def ensure_inside_viewport(rect, viewportWidth, viewportHeight) do
+  @spec ensure_inside_viewport(t()) :: t()
+  def ensure_inside_viewport(rect) do
     update_in(rect, [:center], fn {x, y} ->
       {
-        x |> min(viewportWidth - rect[:width] / 2) |> max(rect[:width] / 2),
-        y |> min(viewportHeight - rect[:height] / 2) |> max(rect[:height] / 2)
+        x |> min(Viewport.width() - rect[:width] / 2) |> max(rect[:width] / 2),
+        y |> min(Viewport.height() - rect[:height] / 2) |> max(rect[:height] / 2)
       }
     end)
   end
