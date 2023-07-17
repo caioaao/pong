@@ -20,4 +20,17 @@ defmodule Pong.Core.Vector do
   def dot({x1, y1}, {x2, y2}) do
     x1 * x2 + y1 * y2
   end
+
+  @spec magnitude(t()) :: number()
+  def magnitude({x, y}) do
+    :math.sqrt(x * x + y * y)
+  end
+
+  @doc """
+  direction returns a unit vector with the same direction as the original vector
+  """
+  @spec direction(t()) :: t()
+  def direction(v) do
+    scale(v, 1 / magnitude(v))
+  end
 end
