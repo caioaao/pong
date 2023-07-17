@@ -1,8 +1,6 @@
 defmodule Pong.Core.GameState do
   alias Pong.Core.{Circle, PlayerPad, Vector, Viewport, Ball}
 
-  @initial_ball_velocity {25, 5}
-
   @type t() :: %{
           ball: Ball.t(),
           player1_pad: PlayerPad.t(),
@@ -20,7 +18,10 @@ defmodule Pong.Core.GameState do
   @spec new() :: t()
   def new() do
     %{
-      ball: %{geometry: %{radius: 5, center: {50, 50}}, velocity: @initial_ball_velocity},
+      ball: %{
+        geometry: %{radius: Ball.radius(), center: {50, 50}},
+        velocity: Ball.initial_velocity()
+      },
       player1_pad: %{geometry: %{center: {50, 10}, width: 20, height: 2}},
       player2_pad: %{geometry: %{center: {50, 90}, width: 20, height: 2}},
       score: {0, 0},
@@ -33,11 +34,10 @@ defmodule Pong.Core.GameState do
     game
   end
 
-  def update(game = %{paused?: false}, ellapsed_millis) do
-    game |> update_ball(ellapsed_millis)
-  end
-
-  defp update_ball(game = %{ball: ball}, ellapsed_millis) do
+  def update(
+        game = %{paused?: false, ball: ball, player1_pad: player1_pad, player2_pad: player2_pad},
+        ellapsed_millis
+      ) do
     delta = Vector.scale(ball[:velocity], ellapsed_millis / 1000)
     ball = update_in(ball, [:geometry], &Circle.move(&1, delta))
 
@@ -59,6 +59,26 @@ defmodule Pong.Core.GameState do
 
         Map.put(game, :ball, ball)
 
+      Circle.intersects_rectangle?(ball[:geometry], player1_pad[:geometry]) ->
+        new_vel =
+          Vector.sub(ball[:geometry][:center], player1_pad[:geometry][:center])
+          |> Vector.direction()
+          |> Vector.scale(Ball.speed())
+
+        ball = Map.put(ball, :velocity, new_vel)
+
+        Map.put(game, :ball, ball)
+
+      Circle.intersects_rectangle?(ball[:geometry], player2_pad[:geometry]) ->
+        new_vel =
+          Vector.sub(ball[:geometry][:center], player2_pad[:geometry][:center])
+          |> Vector.direction()
+          |> Vector.scale(Ball.speed())
+
+        ball = Map.put(ball, :velocity, new_vel)
+
+        Map.put(game, :ball, ball)
+
       true ->
         Map.put(game, :ball, ball)
     end
@@ -67,7 +87,7 @@ defmodule Pong.Core.GameState do
   defp reset_ball(game) do
     Map.put(game, :ball, %{
       geometry: %{radius: 5, center: {50, 50}},
-      velocity: @initial_ball_velocity
+      velocity: Ball.initial_velocity()
     })
   end
 

@@ -11,6 +11,7 @@ defmodule Pong.Core.Circle do
   @spec intersects_rectangle?(t(), Rectangle.t()) :: boolean()
   def intersects_rectangle?(circle, rect) do
     Rectangle.edges(rect)
+    |> Tuple.to_list()
     |> Enum.any?(fn edge -> intersects_line_segment?(circle, edge) end)
   end
 
