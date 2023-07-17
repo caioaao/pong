@@ -1,5 +1,5 @@
-defmodule Pong.Engine.Rectangle do
-  alias Pong.Engine.{Point, LineSegment, Circle}
+defmodule Pong.Core.Rectangle do
+  alias Pong.Core.{Point, LineSegment, Circle}
 
   @type t() :: %{center: Point.t(), width: number(), height: number()}
 

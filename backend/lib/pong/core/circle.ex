@@ -1,5 +1,5 @@
-defmodule Pong.Engine.Circle do
-  alias Pong.Engine.{Point, LineSegment, Rectangle}
+defmodule Pong.Core.Circle do
+  alias Pong.Core.{Point, LineSegment, Rectangle}
 
   @type t() :: %{radius: number(), center: Point.t()}
 

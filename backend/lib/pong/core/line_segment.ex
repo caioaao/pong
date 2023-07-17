@@ -1,5 +1,5 @@
-defmodule Pong.Engine.LineSegment do
-  alias Pong.Engine.{Point, Vector}
+defmodule Pong.Core.LineSegment do
+  alias Pong.Core.{Point, Vector}
 
   @type t() :: {Point.t(), Point.t()}
 
