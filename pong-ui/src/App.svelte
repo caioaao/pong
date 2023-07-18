@@ -7,6 +7,7 @@
 	import Score from "./lib/Score.svelte";
 	import { connectToBackend } from "./lib/ws";
 	import { gameStateStore } from "./lib/game-state-store";
+	import PauseIcon from "./lib/PauseIcon.svelte";
 
 	const socket = new Promise<WebSocket>((resolve) => {
 		const socket = connectToBackend("ws://localhost:4000/ws/dummy");
@@ -66,6 +67,7 @@
 		</div>
 	</header>
 	<GameScene>
+		<PauseIcon />
 		<Player1Pad viewportSize={600} />
 		<Player2Pad viewportSize={600} />
 		<Ball viewportSize={600} />
