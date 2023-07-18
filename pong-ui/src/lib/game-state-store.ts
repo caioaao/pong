@@ -16,7 +16,8 @@ export interface GameState {
 	player1Pad: { geometry: Rectangle }
 	player2Pad: { geometry: Rectangle }
 	isPaused: boolean;
-	score: { player1: number, player2: number }
+	score: { player1: number, player2: number };
+	finished: boolean;
 }
 
 export const gameStateStore = writable<GameState>({
@@ -25,6 +26,7 @@ export const gameStateStore = writable<GameState>({
 	player2Pad: { geometry: { center: { x: 50, y: 90 }, width: 10, height: 2 } },
 	isPaused: true,
 	score: { player1: 0, player2: 0 },
+	finished: false,
 });
 
 

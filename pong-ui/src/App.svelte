@@ -3,6 +3,7 @@
 	import Ball from "./lib/Ball.svelte";
 	import Player1Pad from "./lib/Player1Pad.svelte";
 	import Player2Pad from "./lib/Player2Pad.svelte";
+	import WinnerBanner from "./lib/WinnerBanner.svelte";
 	import GameScene from "./lib/GameScene.svelte";
 	import Score from "./lib/Score.svelte";
 	import { connectToBackend } from "./lib/ws";
@@ -68,6 +69,7 @@
 	</header>
 	<GameScene>
 		<PauseIcon />
+		<WinnerBanner />
 		<Player1Pad viewportSize={600} />
 		<Player2Pad viewportSize={600} />
 		<Ball viewportSize={600} />
