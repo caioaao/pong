@@ -41,8 +41,14 @@ defmodule Pong.Core.Match.Server do
 
   @impl true
   def handle_info(:tick, game_state) do
-    schedule_next_update(self())
-    {:noreply, GameState.update(game_state, @fixed_delta_time_millis)}
+    IO.write('.')
+    {result, new_state} = GameState.next(game_state, @fixed_delta_time_millis)
+
+    if result == :cont do
+      schedule_next_update(self())
+    end
+
+    {:noreply, new_state}
   end
 
   defp schedule_next_update(server) do
