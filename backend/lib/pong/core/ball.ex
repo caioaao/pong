@@ -5,5 +5,5 @@ defmodule Pong.Core.Ball do
 
   def speed, do: 60
   def radius, do: 5
-  def initial_velocity, do: {0, speed()}
+  def initial_velocity, do: {0, -speed()}
 end

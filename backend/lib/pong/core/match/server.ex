@@ -41,7 +41,6 @@ defmodule Pong.Core.Match.Server do
 
   @impl true
   def handle_info(:tick, game_state) do
-    IO.write('.')
     {result, new_state} = GameState.next(game_state, @fixed_delta_time_millis)
 
     if result == :cont do
