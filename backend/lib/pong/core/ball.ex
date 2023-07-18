@@ -3,7 +3,7 @@ defmodule Pong.Core.Ball do
 
   @type t() :: %{geometry: Circle.t(), velocity: Vector.t()}
 
-  def speed, do: 30
+  def speed, do: 60
   def radius, do: 5
   def initial_velocity, do: {0, speed()}
 end
