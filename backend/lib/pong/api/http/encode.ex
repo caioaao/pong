@@ -8,8 +8,8 @@ defmodule Pong.Api.Http.Encode do
     |> update_in([:player1_pad, :geometry, :center], &prepare_xy_to_encode/1)
     |> update_in([:player2_pad, :geometry, :center], &prepare_xy_to_encode/1)
     |> update_in([:score], fn {a, b} -> %{player1: a, player2: b} end)
-    |> Map.delete(:paused?)
     |> Map.put(:is_paused, s[:paused?])
+    |> Map.delete(:paused?)
     |> Jason.encode()
   end
 

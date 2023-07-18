@@ -12,10 +12,8 @@ defmodule Pong.App do
           port: 4000
         ]
       ),
-      Registry.child_spec(
-        keys: :duplicate,
-        name: Registry.Pong.App
-      )
+      {DynamicSupervisor, name: Pong.Core.Match.ServerSupervisor, strategy: :one_for_one},
+      Pong.Core.Match.Registry.child_spec(name: Pong.Core.Match.Registry)
     ]
 
     opts = [strategy: :one_for_one, name: __MODULE__]

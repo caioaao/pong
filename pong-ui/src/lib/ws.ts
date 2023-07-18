@@ -24,6 +24,7 @@ const wireGameStateSchema = z.object({
 	player1_pad: playerPadSchema,
 	player2_pad: playerPadSchema,
 	score: scoreSchema,
+	is_paused: z.boolean(),
 });
 
 function parseGameStateFromWire(wire: string) {
@@ -36,7 +37,7 @@ function parseGameStateFromWire(wire: string) {
 		player1Pad: parsed.player1_pad,
 		player2Pad: parsed.player2_pad,
 		score: parsed.score,
-		isPaused: true,
+		isPaused: parsed.is_paused,
 	}
 }
 
