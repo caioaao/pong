@@ -6,7 +6,8 @@ defmodule Pong.Core.GameState do
           player1_pad: PlayerPad.t(),
           player2_pad: PlayerPad.t(),
           score: {integer(), integer()},
-          paused?: boolean()
+          paused?: boolean(),
+          finished?: boolean()
         }
 
   defmodule Command do
@@ -25,12 +26,25 @@ defmodule Pong.Core.GameState do
       player1_pad: %{geometry: %{center: {50, 10}, width: 20, height: 2}},
       player2_pad: %{geometry: %{center: {50, 90}, width: 20, height: 2}},
       score: {0, 0},
-      paused?: false
+      paused?: false,
+      finished?: false
     }
+  end
+
+  @spec next(t(), number()) :: {:cont, t()} | {:done, t()}
+  def next(state, ellapsed_millis) do
+    case update(state, ellapsed_millis) do
+      %{finished?: true} = new_state -> {:done, new_state}
+      new_state -> {:cont, new_state}
+    end
   end
 
   @spec update(t(), number()) :: t()
   def update(game = %{paused?: true}, _) do
+    game
+  end
+
+  def update(game = %{finished?: true}, _) do
     game
   end
 
@@ -43,12 +57,10 @@ defmodule Pong.Core.GameState do
 
     cond do
       Circle.intersects_line_segment?(ball[:geometry], Viewport.bottom_edge()) ->
-        update_in(game, [:score], fn {p1, p2} -> {p1, p2 + 1} end)
-        |> reset_ball()
+        score_goal(game, :player2)
 
       Circle.intersects_line_segment?(ball[:geometry], Viewport.top_edge()) ->
-        update_in(game, [:score], fn {p1, p2} -> {p1 + 1, p2} end)
-        |> reset_ball()
+        score_goal(game, :player1)
 
       Circle.intersects_line_segment?(ball[:geometry], Viewport.left_edge()) or
           Circle.intersects_line_segment?(ball[:geometry], Viewport.right_edge()) ->
@@ -123,5 +135,23 @@ defmodule Pong.Core.GameState do
 
   def process_command(game, {:unpause, _}) do
     Map.put(game, :paused?, false)
+  end
+
+  defp score_goal(game, player) do
+    game
+    |> update_in([:score], fn {p1, p2} ->
+      case player do
+        :player1 -> {p1 + 1, p2}
+        :player2 -> {p1, p2 + 1}
+      end
+    end)
+    |> reset_ball()
+    |> case do
+      new_state = %{score: {p1, p2}} when p1 >= 11 or p2 >= 11 ->
+        Map.put(new_state, :finished?, true)
+
+      new_state ->
+        new_state
+    end
   end
 end
