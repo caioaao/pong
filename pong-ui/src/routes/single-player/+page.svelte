@@ -11,22 +11,17 @@
 	import { gameStateStore } from '$lib/game-state-store';
 	import PauseIcon from '$lib/PauseIcon.svelte';
 
-	const socket = new Promise<WebSocket>((resolve) => {
-		const socket = connectToBackend('ws://localhost:4000/ws/dummy');
-		socket.addEventListener('open', () => {
-			resolve(socket);
-		});
-	});
+	let socket: WebSocket;
 
-	let isPaused = false;
+	$: isPaused = $gameStateStore.isPaused;
 
 	onMount(() => {
-		gameStateStore.subscribe((gameState) => {
-			console.log({ gameState });
-			isPaused = gameState.isPaused;
+		const openingSocket = connectToBackend('ws://localhost:4000/ws/dummy');
+		openingSocket.addEventListener('open', () => {
+			socket = openingSocket;
 		});
 
-		return () => socket.then((socket) => socket.close());
+		return () => socket?.close();
 	});
 
 	function onKeyDown(e: KeyboardEvent) {
@@ -34,19 +29,19 @@
 			case 'ArrowLeft':
 			case 'a':
 				e.preventDefault();
-				socket.then((socket) => socket.send('move_left'));
+				socket.send('move_left');
 				break;
 			case 'ArrowRight':
 			case 'd':
 				e.preventDefault();
-				socket.then((socket) => socket.send('move_right'));
+				socket.send('move_right');
 				break;
 			case 'Space':
 				e.preventDefault();
 				if (isPaused) {
-					socket.then((socket) => socket.send('unpause'));
+					socket.send('unpause');
 				} else {
-					socket.then((socket) => socket.send('pause'));
+					socket.send('pause');
 				}
 				break;
 		}
