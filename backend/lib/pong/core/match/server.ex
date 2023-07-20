@@ -20,6 +20,7 @@ defmodule Pong.Core.Match.Server do
     GenServer.cast(server, {:process_command, cmd})
   end
 
+  @spec state(pid()) :: GameState.t()
   def state(server) do
     GenServer.call(server, :lookup_state)
   end

@@ -3,8 +3,6 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
   require Logger
 
   @behaviour :cowboy_websocket
-  require Logger
-  require Jason
 
   @possible_commands [
     {:move_left, :player2},

@@ -13,7 +13,7 @@ defmodule Pong.App do
         ]
       ),
       {DynamicSupervisor, name: Pong.Core.Match.ServerSupervisor, strategy: :one_for_one},
-      Pong.Core.Match.Registry.child_spec(name: Pong.Core.Match.Registry)
+      Pong.Core.Match.Registry.child_spec([])
     ]
 
     opts = [strategy: :one_for_one, name: __MODULE__]

@@ -11,7 +11,9 @@
 	import PauseIcon from "./lib/PauseIcon.svelte";
 
 	const socket = new Promise<WebSocket>((resolve) => {
-		const socket = connectToBackend("ws://localhost:4000/ws/dummy");
+		const socket = connectToBackend(
+			"ws://localhost:4000/ws/123/player1"
+		);
 		socket.addEventListener("open", () => {
 			resolve(socket);
 		});
