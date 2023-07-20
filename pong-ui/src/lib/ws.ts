@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { gameStateStore } from "./game-state-store";
+import { gameState } from "./game-state-store";
 
 // Wire schemas used for parsing messages received from the back-end
 const vectorSchema = z.object({
@@ -64,7 +64,7 @@ export function connectToBackend(url: string): WebSocket {
 
 	socket.addEventListener('message', function(event) {
 		try {
-			gameStateStore.set(parseGameStateFromWire(event.data));
+			gameState.set(parseGameStateFromWire(event.data));
 		} catch (err) {
 			console.error({ rawMessage: event.data })
 			throw (err)

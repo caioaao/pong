@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { scale } from "../utils";
+	import { scale } from '../utils';
 
-	export let x: number, y: number, viewportSize: number;
-	export let radius = 5;
+	export let center: { x: number; y: number }, radius: number;
+	export let viewportSize: number;
 
 	$: scaledRadius = scale(viewportSize, radius);
-	$: left = scale(viewportSize, x) - scaledRadius;
-	$: bottom = scale(viewportSize, y) - scaledRadius;
+	$: left = scale(viewportSize, center.x) - scaledRadius;
+	$: bottom = scale(viewportSize, center.y) - scaledRadius;
 </script>
 
 <div

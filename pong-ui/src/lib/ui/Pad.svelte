@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { scale } from "../utils";
+	import { scale } from '../utils';
 
-	export let x: number;
-	export let y: number;
+	export let center: { x: number; y: number };
 	export let viewportSize: number;
 	export let width: number;
 	export let height: number;
@@ -10,8 +9,8 @@
 	$: scaledWidth = scale(viewportSize, width);
 	$: scaledHeight = scale(viewportSize, height);
 
-	$: left = scale(viewportSize, x) - scaledWidth / 2;
-	$: bottom = scale(viewportSize, y) - scaledHeight / 2;
+	$: left = scale(viewportSize, center.x) - scaledWidth / 2;
+	$: bottom = scale(viewportSize, center.y) - scaledHeight / 2;
 </script>
 
 <div
