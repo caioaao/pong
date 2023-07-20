@@ -18,6 +18,9 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
       Process.send(self(), :tick_state, [])
       Process.send(self(), :tick_cmd, [])
 
+      MatchServer.process_command(server, {:ready, :player1})
+      MatchServer.process_command(server, {:ready, :player2})
+
       {:ok, server}
     end
   end

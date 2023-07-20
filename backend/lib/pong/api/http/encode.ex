@@ -12,6 +12,9 @@ defmodule Pong.Api.Http.Encode do
     |> Map.delete(:paused?)
     |> Map.put(:finished, s[:finished?])
     |> Map.delete(:finished?)
+    |> Map.update!(:pending_players, fn players ->
+      MapSet.to_list(players) |> Enum.map(&to_string/1)
+    end)
     |> Jason.encode()
   end
 

@@ -2,16 +2,18 @@ defmodule Pong.Core.GameState do
   alias Pong.Core.{Circle, PlayerPad, Vector, Viewport, Ball}
 
   @type t() :: %{
+          optional(:millis_until_start) => integer(),
           ball: Ball.t(),
           player1_pad: PlayerPad.t(),
           player2_pad: PlayerPad.t(),
           score: {integer(), integer()},
           paused?: boolean(),
-          finished?: boolean()
+          finished?: boolean(),
+          pending_players: MapSet.t(:player1 | :player2)
         }
 
   defmodule Command do
-    @type type() :: :move_left | :move_right | :pause | :unpause
+    @type type() :: :move_left | :move_right | :pause | :unpause | :ready
     @type actor() :: :player1 | :player2
     @type t() :: {type(), actor()}
   end
@@ -27,7 +29,8 @@ defmodule Pong.Core.GameState do
       player2_pad: %{geometry: %{center: {50, 90}, width: 20, height: 2}},
       score: {0, 0},
       paused?: false,
-      finished?: false
+      finished?: false,
+      pending_players: MapSet.new([:player1, :player2])
     }
   end
 
@@ -40,16 +43,24 @@ defmodule Pong.Core.GameState do
   end
 
   @spec update(t(), number()) :: t()
-  def update(game = %{paused?: true}, _) do
-    game
-  end
-
-  def update(game = %{finished?: true}, _) do
-    game
+  def update(game = %{millis_until_start: millis_until_start}, ellapsed_millis)
+      when millis_until_start > 0 do
+    if millis_until_start < ellapsed_millis do
+      Map.put(game, :millis_until_start, 0)
+      |> update(ellapsed_millis - millis_until_start)
+    else
+      Map.put(game, :millis_until_start, millis_until_start - ellapsed_millis)
+    end
   end
 
   def update(
-        game = %{paused?: false, ball: ball, player1_pad: player1_pad, player2_pad: player2_pad},
+        game = %{
+          paused?: false,
+          millis_until_start: 0,
+          ball: ball,
+          player1_pad: player1_pad,
+          player2_pad: player2_pad
+        },
         ellapsed_millis
       ) do
     delta = Vector.scale(ball[:velocity], ellapsed_millis / 1000)
@@ -96,6 +107,10 @@ defmodule Pong.Core.GameState do
     end
   end
 
+  def update(game, _) do
+    game
+  end
+
   defp reset_ball(game) do
     Map.put(game, :ball, %{
       geometry: %{radius: 5, center: {50, 50}},
@@ -135,6 +150,20 @@ defmodule Pong.Core.GameState do
 
   def process_command(game, {:unpause, _}) do
     Map.put(game, :paused?, false)
+  end
+
+  def process_command(game, {:ready, actor}) do
+    game
+    |> Map.update!(:pending_players, &MapSet.delete(&1, actor))
+    |> ensure_start_timer_starts()
+  end
+
+  defp ensure_start_timer_starts(%{pending_players: pending_players} = game) do
+    if !Map.has_key?(game, :millis_until_start) and MapSet.size(pending_players) == 0 do
+      Map.put(game, :millis_until_start, 3000)
+    else
+      game
+    end
   end
 
   defp score_goal(game, player) do
