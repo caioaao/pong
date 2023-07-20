@@ -1,20 +1,19 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-	import Ball from "../lib/Ball.svelte";
-	import Player1Pad from "../lib/Player1Pad.svelte";
-	import Player2Pad from "../lib/Player2Pad.svelte";
-	import WinnerBanner from "../lib/WinnerBanner.svelte";
-	import GameScene from "../lib/GameScene.svelte";
-	import Score from "../lib/Score.svelte";
-	import StartCountdown from "../lib/StartCountdown.svelte";
-	import { connectToBackend } from "../lib/ws";
-	import { gameStateStore } from "../lib/game-state-store";
-	import PauseIcon from "../lib/PauseIcon.svelte";
-	import { navigateTo } from "../lib/routing-store";
+	import { onMount } from 'svelte';
+	import Ball from '$lib/Ball.svelte';
+	import Player1Pad from '$lib/Player1Pad.svelte';
+	import Player2Pad from '$lib/Player2Pad.svelte';
+	import WinnerBanner from '$lib/WinnerBanner.svelte';
+	import GameScene from '$lib/GameScene.svelte';
+	import Score from '$lib/Score.svelte';
+	import StartCountdown from '$lib/StartCountdown.svelte';
+	import { connectToBackend } from '$lib/ws';
+	import { gameStateStore } from '$lib/game-state-store';
+	import PauseIcon from '$lib/PauseIcon.svelte';
 
 	const socket = new Promise<WebSocket>((resolve) => {
-		const socket = connectToBackend("ws://localhost:4000/ws/dummy");
-		socket.addEventListener("open", () => {
+		const socket = connectToBackend('ws://localhost:4000/ws/dummy');
+		socket.addEventListener('open', () => {
 			resolve(socket);
 		});
 	});
@@ -32,30 +31,22 @@
 
 	function onKeyDown(e: KeyboardEvent) {
 		switch (e.code) {
-			case "ArrowLeft":
-			case "a":
+			case 'ArrowLeft':
+			case 'a':
 				e.preventDefault();
-				socket.then((socket) =>
-					socket.send("move_left")
-				);
+				socket.then((socket) => socket.send('move_left'));
 				break;
-			case "ArrowRight":
-			case "d":
+			case 'ArrowRight':
+			case 'd':
 				e.preventDefault();
-				socket.then((socket) =>
-					socket.send("move_right")
-				);
+				socket.then((socket) => socket.send('move_right'));
 				break;
-			case "Space":
+			case 'Space':
 				e.preventDefault();
 				if (isPaused) {
-					socket.then((socket) =>
-						socket.send("unpause")
-					);
+					socket.then((socket) => socket.send('unpause'));
 				} else {
-					socket.then((socket) =>
-						socket.send("pause")
-					);
+					socket.then((socket) => socket.send('pause'));
 				}
 				break;
 		}
@@ -63,7 +54,7 @@
 </script>
 
 <nav>
-	<a href="/" on:click|preventDefault={() => navigateTo("/")}>Go Back</a>
+	<a href="/">Go Back</a>
 </nav>
 <main>
 	<header>
@@ -96,8 +87,7 @@
 		text-align: left;
 		text-transform: uppercase;
 		font-weight: 900;
-		font-family: Avenir, Montserrat, Corbel, "URW Gothic",
-			source-sans-pro, sans-serif;
+		font-family: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
 		flex: 1;
 		margin: 0;
 		font-size: 3.2em;

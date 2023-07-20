@@ -1,13 +1,11 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-	import pauseIconURL from "../assets/pause-icon.svg";
-	import { gameStateStore } from "./game-state-store";
+	import { onMount } from 'svelte';
+	import pauseIconURL from '../assets/pause-icon.svg';
+	import { gameStateStore } from './game-state-store';
 
 	let isPaused: boolean;
 	onMount(() => {
-		gameStateStore.subscribe(
-			(state) => (isPaused = state.isPaused)
-		);
+		gameStateStore.subscribe((state) => (isPaused = state.isPaused));
 	});
 </script>
 
