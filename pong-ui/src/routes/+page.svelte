@@ -1,4 +1,5 @@
 <nav>
+	<h1>PONG</h1>
 	<ul>
 		<li>
 			<a href="/">Home</a>
@@ -12,10 +13,8 @@
 <style>
 	nav > ul {
 		list-style: none;
-		text-align: left;
 	}
 	nav > ul > li {
-		width: 300px;
 		font-size: 2rem;
 	}
 </style>

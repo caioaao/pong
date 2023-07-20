@@ -87,18 +87,13 @@
 	header h1 {
 		text-align: left;
 		text-transform: uppercase;
-		font-weight: 900;
-		font-family: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
 		flex: 1;
-		margin: 0;
-		font-size: 3.2em;
 	}
 
 	header .score {
 		flex: 1;
 		text-align: right;
 		font-weight: 900;
-		font-family: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
 		font-size: 3.2em;
 	}
 
