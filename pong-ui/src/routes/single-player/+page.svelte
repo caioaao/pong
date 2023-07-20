@@ -5,7 +5,6 @@
 	import Pad from '$lib/ui/Pad.svelte';
 	import WinnerBanner from '$lib/WinnerBanner.svelte';
 	import GameScene from '$lib/GameScene.svelte';
-	import Score from '$lib/Score.svelte';
 	import { connectToBackend } from '$lib/ws';
 	import { gameState } from '$lib/game-state-store';
 	import pauseIconURL from '$lib/assets/pause-icon.svg';
@@ -54,7 +53,7 @@
 	<header>
 		<h1>Pong</h1>
 		<div class="score">
-			<Score />
+			{$gameState.score.player1} - {$gameState.score.player2}
 		</div>
 	</header>
 	<GameScene>
@@ -96,6 +95,9 @@
 	header .score {
 		flex: 1;
 		text-align: right;
+		font-weight: 900;
+		font-family: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
+		font-size: 3.2em;
 	}
 
 	nav {
