@@ -26,6 +26,7 @@ const wireGameStateSchema = z.object({
 	score: scoreSchema,
 	is_paused: z.boolean(),
 	finished: z.boolean(),
+	millis_until_start: z.number().optional(),
 });
 
 function parseGameStateFromWire(wire: string) {
@@ -40,6 +41,7 @@ function parseGameStateFromWire(wire: string) {
 		score: parsed.score,
 		isPaused: parsed.is_paused,
 		finished: parsed.finished,
+		millisUntilStart: parsed.millis_until_start,
 	}
 }
 

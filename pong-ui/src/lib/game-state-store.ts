@@ -18,6 +18,7 @@ export interface GameState {
 	isPaused: boolean;
 	score: { player1: number, player2: number };
 	finished: boolean;
+	millisUntilStart?: number;
 }
 
 export const gameStateStore = writable<GameState>({

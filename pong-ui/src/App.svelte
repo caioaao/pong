@@ -6,6 +6,7 @@
 	import WinnerBanner from "./lib/WinnerBanner.svelte";
 	import GameScene from "./lib/GameScene.svelte";
 	import Score from "./lib/Score.svelte";
+	import StartCountdown from "./lib/StartCountdown.svelte";
 	import { connectToBackend } from "./lib/ws";
 	import { gameStateStore } from "./lib/game-state-store";
 	import PauseIcon from "./lib/PauseIcon.svelte";
@@ -68,6 +69,7 @@
 		</div>
 	</header>
 	<GameScene>
+		<StartCountdown />
 		<PauseIcon />
 		<WinnerBanner />
 		<Player1Pad viewportSize={600} />
