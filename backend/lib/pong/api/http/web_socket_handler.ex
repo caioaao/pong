@@ -8,8 +8,11 @@ defmodule Pong.Api.Http.WebSocketHandler do
     # FIXME 
     with ["", "ws", match_id, player_id] <- String.split(request.path, "/") do
       case player_id do
-        "player1" -> {:cowboy_websocket, request, %{match_id: match_id, player: :player1}}
-        "player2" -> {:cowboy_websocket, request, %{match_id: match_id, player: :player1}}
+        "player1" ->
+          {:cowboy_websocket, request, %{match_id: match_id, player: :player1}}
+
+        "player2" ->
+          {:cowboy_websocket, request, %{match_id: match_id, player: :player2}}
       end
     end
   end
