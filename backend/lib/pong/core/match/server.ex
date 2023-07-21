@@ -2,8 +2,9 @@ defmodule Pong.Core.Match.Server do
   use GenServer, restart: :temporary
   alias Pong.Core.{GameState}
 
-  @update_frequency_hz 30
-  @fixed_delta_time_millis div(1000, @update_frequency_hz)
+  # tick rate in Hz
+  @tick_rate 64
+  @fixed_delta_time_millis div(1000, @tick_rate)
 
   def start_link(opts) do
     case GenServer.start_link(__MODULE__, [], opts) do
