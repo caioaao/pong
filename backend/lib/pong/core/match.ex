@@ -79,7 +79,6 @@ defmodule Pong.Core.Match do
       end
     end)
     |> reset_ball()
-    |> reset_pads()
     |> case do
       state = %{score: {p1, _}} when p1 >= 11 ->
         %{state: :finished, winner: :player1, final_score: state[:score]}
@@ -99,17 +98,6 @@ defmodule Pong.Core.Match do
       ball
       |> Map.update!(:geometry, &Map.put(&1, :center, Field.center(state[:field])))
       |> Map.put(:velocity, Ball.initial_velocity())
-    end)
-  end
-
-  @spec reset_pads(in_progress()) :: in_progress()
-  def reset_pads(state) do
-    state
-    |> update_in([:player1_pad, :geometry, :center], fn {_, y} ->
-      {Field.center_x(state[:field]), y}
-    end)
-    |> update_in([:player2_pad, :geometry, :center], fn {_, y} ->
-      {Field.center_x(state[:field]), y}
     end)
   end
 

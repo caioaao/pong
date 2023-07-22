@@ -32,15 +32,18 @@ defmodule Pong.Core.MatchTest do
       assert match_after_score[:ball] == Match.start()[:ball]
     end
 
-    test "resets pads" do
-      match_after_score =
+    test "does not reset pads" do
+      match_before_score =
         Match.start()
         |> Map.update!(:player1_pad, &PlayerPad.move_left/1)
         |> Map.update!(:player2_pad, &PlayerPad.move_right/1)
+
+      match_after_score =
+        match_before_score
         |> Match.record_point(:player2)
 
-      assert match_after_score[:player1_pad] == Match.start()[:player1_pad]
-      assert match_after_score[:player2_pad] == Match.start()[:player2_pad]
+      assert match_after_score[:player1_pad] == match_before_score[:player1_pad]
+      assert match_after_score[:player2_pad] == match_before_score[:player2_pad]
     end
 
     test "increases score" do

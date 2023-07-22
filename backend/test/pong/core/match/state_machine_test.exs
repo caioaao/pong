@@ -17,6 +17,9 @@ defmodule Pong.Core.Match.StateMachineTest do
       {:player_request, :move_left, :player1},
       {:player_request, :move_left, :player1},
       {:player_request, :move_left, :player1},
+      {:tick, 100},
+      {:tick, 300},
+      {:tick, 300},
       {:tick, 100}
     ]
 
@@ -66,6 +69,30 @@ defmodule Pong.Core.Match.StateMachineTest do
         player1_pad: %{geometry: %{center: {35, 10}, height: 2, width: 20}},
         player2_pad: %{geometry: %{center: {50, 90}, height: 2, width: 20}},
         score: {0, 0},
+        state: :in_progress
+      },
+      %{
+        ball: %{geometry: %{center: {50, 26}, radius: 5}, velocity: {0, -60}},
+        field: {100, 100},
+        player1_pad: %{geometry: %{center: {35, 10}, height: 2, width: 20}},
+        player2_pad: %{geometry: %{center: {50, 90}, height: 2, width: 20}},
+        score: {0, 0},
+        state: :in_progress
+      },
+      %{
+        ball: %{geometry: %{center: {50, 8}, radius: 5}, velocity: {0, -60}},
+        field: {100, 100},
+        player1_pad: %{geometry: %{center: {35, 10}, height: 2, width: 20}},
+        player2_pad: %{geometry: %{center: {50, 90}, height: 2, width: 20}},
+        score: {0, 0},
+        state: :in_progress
+      },
+      %{
+        ball: %{geometry: %{center: {50, 50}, radius: 5}, velocity: {0, -60}},
+        field: {100, 100},
+        player1_pad: %{geometry: %{center: {35, 10}, height: 2, width: 20}},
+        player2_pad: %{geometry: %{center: {50, 90}, height: 2, width: 20}},
+        score: {0, 1},
         state: :in_progress
       }
     ]
