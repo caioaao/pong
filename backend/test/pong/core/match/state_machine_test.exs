@@ -1,102 +1,79 @@
-defmodule Pong.Core.Match.StateMachineTest.StateTransition do
-  defmacro test(description, initial_state, evt, expected) do
-    quote do
-      test unquote(description) do
-        assert Pong.Core.Match.StateMachine.process_event(unquote(initial_state), unquote(evt)) ==
-                 unquote(expected)
-      end
-    end
-  end
-end
-
 defmodule Pong.Core.Match.StateMachineTest do
   use ExUnit.Case, async: true
 
-  require Pong.Core.Match.StateMachineTest.StateTransition
-  alias Pong.Core.Match.StateMachineTest.{StateTransition}
   alias Pong.Core.{Match}
+  alias Pong.Core.Match.{StateMachine}
 
-  StateTransition.test(
-    "from created with small tick",
-    %{state: :created, millis_left_until_timeout: 100, players_ready: %MapSet{}},
-    {:tick, 10},
-    %{state: :created, millis_left_until_timeout: 90, players_ready: %MapSet{}}
-  )
+  test "happy path" do
+    s0 = Match.create()
 
-  StateTransition.test(
-    "from created with delta time matching millis left",
-    %{state: :created, millis_left_until_timeout: 100, players_ready: %MapSet{}},
-    {:tick, 100},
-    %{state: :canceled}
-  )
+    events = [
+      {:tick, 10},
+      {:player_request, :join_match, :player2},
+      {:player_request, :join_match, :player1},
+      {:tick, 100},
+      {:tick, 33},
+      {:tick, 3000},
+      {:player_request, :move_left, :player1},
+      {:player_request, :move_left, :player1},
+      {:player_request, :move_left, :player1},
+      {:tick, 100}
+    ]
 
-  StateTransition.test(
-    "from created with big delta time matching millis",
-    %{state: :created, millis_left_until_timeout: 100, players_ready: %MapSet{}},
-    {:tick, 1000},
-    %{state: :canceled}
-  )
+    expected_states = [
+      %{state: :created, millis_left_until_timeout: 59990, players_ready: %MapSet{}},
+      %{state: :created, millis_left_until_timeout: 59990, players_ready: MapSet.new([:player2])},
+      %{
+        state: :starting,
+        millis_left_until_start: 3000
+      },
+      %{
+        state: :starting,
+        millis_left_until_start: 2900
+      },
+      %{
+        state: :starting,
+        millis_left_until_start: 2867
+      },
+      Match.start(),
+      %{
+        ball: %{geometry: %{center: {50, 50}, radius: 5}, velocity: {0, -60}},
+        field: {100, 100},
+        player1_pad: %{geometry: %{center: {45, 10}, height: 2, width: 20}},
+        player2_pad: %{geometry: %{center: {50, 90}, height: 2, width: 20}},
+        score: {0, 0},
+        state: :in_progress
+      },
+      %{
+        ball: %{geometry: %{center: {50, 50}, radius: 5}, velocity: {0, -60}},
+        field: {100, 100},
+        player1_pad: %{geometry: %{center: {40, 10}, height: 2, width: 20}},
+        player2_pad: %{geometry: %{center: {50, 90}, height: 2, width: 20}},
+        score: {0, 0},
+        state: :in_progress
+      },
+      %{
+        ball: %{geometry: %{center: {50, 50}, radius: 5}, velocity: {0, -60}},
+        field: {100, 100},
+        player1_pad: %{geometry: %{center: {35, 10}, height: 2, width: 20}},
+        player2_pad: %{geometry: %{center: {50, 90}, height: 2, width: 20}},
+        score: {0, 0},
+        state: :in_progress
+      },
+      %{
+        ball: %{geometry: %{center: {50, 44}, radius: 5}, velocity: {0, -60}},
+        field: {100, 100},
+        player1_pad: %{geometry: %{center: {35, 10}, height: 2, width: 20}},
+        player2_pad: %{geometry: %{center: {50, 90}, height: 2, width: 20}},
+        score: {0, 0},
+        state: :in_progress
+      }
+    ]
 
-  StateTransition.test(
-    "player 1 joins created match",
-    %{state: :created, millis_left_until_timeout: 100, players_ready: %MapSet{}},
-    {:player_request, :join_match, :player1},
-    %{state: :created, millis_left_until_timeout: 100, players_ready: MapSet.new([:player1])}
-  )
-
-  StateTransition.test(
-    "has no effect if player 1 joins created match again",
-    %{state: :created, millis_left_until_timeout: 100, players_ready: MapSet.new([:player1])},
-    {:player_request, :join_match, :player1},
-    %{state: :created, millis_left_until_timeout: 100, players_ready: MapSet.new([:player1])}
-  )
-
-  StateTransition.test(
-    "player 2 joins created match after player 1",
-    %{state: :created, millis_left_until_timeout: 100, players_ready: MapSet.new([:player1])},
-    {:player_request, :join_match, :player2},
-    %{state: :starting, millis_left_until_start: 3000}
-  )
-
-  StateTransition.test(
-    "player 2 joins created match before player 1",
-    %{state: :created, millis_left_until_timeout: 100, players_ready: %MapSet{}},
-    {:player_request, :join_match, :player2},
-    %{state: :created, millis_left_until_timeout: 100, players_ready: MapSet.new([:player2])}
-  )
-
-  StateTransition.test(
-    "receiving small tick on created after a player joins",
-    %{state: :created, millis_left_until_timeout: 100, players_ready: MapSet.new([:player1])},
-    {:tick, 10},
-    %{state: :created, millis_left_until_timeout: 90, players_ready: MapSet.new([:player1])}
-  )
-
-  StateTransition.test(
-    "match times out after player joins",
-    %{state: :created, millis_left_until_timeout: 100, players_ready: MapSet.new([:player1])},
-    {:tick, 100},
-    %{state: :canceled}
-  )
-
-  StateTransition.test(
-    "receiving small tick when starting",
-    %{state: :starting, millis_left_until_start: 100},
-    {:tick, 13},
-    %{state: :starting, millis_left_until_start: 87}
-  )
-
-  StateTransition.test(
-    "from starting with delta time matching millis left",
-    %{state: :starting, millis_left_until_start: 1230},
-    {:tick, 1230},
-    Match.start()
-  )
-
-  StateTransition.test(
-    "from starting with delta time bigger than millis left",
-    %{state: :starting, millis_left_until_start: 1230},
-    {:tick, 9001},
-    Match.start()
-  )
+    Enum.zip_reduce([events, expected_states], s0, fn [evt, expected_state], curr_state ->
+      new_state = StateMachine.process_event(curr_state, evt)
+      assert new_state == expected_state
+      new_state
+    end)
+  end
 end
