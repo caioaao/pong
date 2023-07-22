@@ -20,5 +20,22 @@ defmodule Pong.Core.BallTest do
     end)
   end
 
+  test "center point, point moving away from, and direction vector are collinear after moving away" do
+    Enum.to_list(1..100)
+    |> Enum.each(fn _ ->
+      ball_center = random_coords()
+      pt = random_coords()
+
+      ball =
+        %{
+          geometry: %{center: ball_center, radius: :rand.uniform(20)},
+          velocity: random_coords()
+        }
+        |> Ball.redirect_away_from_point(pt)
+
+      assert abs(Vector.cross(Vector.sub(ball_center, pt), ball[:velocity])) < 1.0e-6
+    end)
+  end
+
   defp random_coords(), do: {:rand.uniform(100), :rand.uniform(100)}
 end

@@ -21,6 +21,13 @@ defmodule Pong.Core.Vector do
     x1 * x2 + y1 * y2
   end
 
+  # cross product will only result in a vector in the `z` axis. we just return
+  # the magnitude of this vector
+  @spec cross(t(), t()) :: number()
+  def cross({x1, y1}, {x2, y2}) do
+    x1 * y2 - x2 * y1
+  end
+
   @spec magnitude(t()) :: number()
   def magnitude({x, y}) do
     :math.sqrt(x * x + y * y)
