@@ -77,4 +77,25 @@ defmodule Pong.Core.Match.StateMachineTest do
     {:tick, 100},
     %{state: :canceled}
   )
+
+  Assertions.test_transition(
+    "receiving small tick when starting",
+    %{state: :starting, millis_left_until_start: 100},
+    {:tick, 13},
+    %{state: :starting, millis_left_until_start: 87}
+  )
+
+  Assertions.test_transition(
+    "from starting with delta time matching millis left",
+    %{state: :starting, millis_left_until_start: 1230},
+    {:tick, 1230},
+    %{state: :in_progress}
+  )
+
+  Assertions.test_transition(
+    "from starting with delta time bigger than millis left",
+    %{state: :starting, millis_left_until_start: 1230},
+    {:tick, 9001},
+    %{state: :in_progress}
+  )
 end

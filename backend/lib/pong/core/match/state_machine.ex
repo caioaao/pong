@@ -46,6 +46,20 @@ defmodule Pong.Core.Match.StateMachine do
     end
   end
 
+  ######################################
+  # STARTING STATE processing functions
+  ######################################
+  def process_event(
+        %{state: :starting, millis_left_until_start: millis_left} = match,
+        {:tick, ellapsed_millis}
+      ) do
+    if millis_left <= ellapsed_millis do
+      %{state: :in_progress}
+    else
+      Map.update!(match, :millis_left_until_start, &(&1 - ellapsed_millis))
+    end
+  end
+
   def process_event(state, _evt) do
     state
   end

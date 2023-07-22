@@ -12,9 +12,9 @@ defmodule Pong.Core.Match do
           millis_left_until_start: number()
         }
 
+  # TODO
   @type in_progress() :: %{
-          state: :in_progress,
-          match_state: GameState.t()
+          state: :in_progress
         }
 
   @type finished() :: %{
