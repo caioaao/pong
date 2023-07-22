@@ -1,5 +1,5 @@
 defmodule Pong.Core.Circle do
-  alias Pong.Core.{Point, LineSegment, Rectangle, Vector, Viewport}
+  alias Pong.Core.{Point, LineSegment, Rectangle, Vector, Viewport, Field}
 
   @type t() :: %{radius: number(), center: Point.t()}
 
@@ -24,8 +24,18 @@ defmodule Pong.Core.Circle do
   def ensure_inside_viewport(circle) do
     update_in(circle, [:center], fn {x, y} ->
       {
-        x |> min(Viewport.width() - circle[:radius] / 2) |> max(circle[:radius] / 2),
-        y |> min(Viewport.height() - circle[:radius] / 2) |> max(circle[:radius] / 2)
+        x |> min(Viewport.width() - circle[:radius] / 2) |> max(circle[:radius]),
+        y |> min(Viewport.height() - circle[:radius] / 2) |> max(circle[:radius])
+      }
+    end)
+  end
+
+  @spec ensure_inside_field(t(), Field.t()) :: t()
+  def ensure_inside_field(circle, {width, height}) do
+    update_in(circle, [:center], fn {x, y} ->
+      {
+        x |> min(width - circle[:radius]) |> max(circle[:radius]),
+        y |> min(height - circle[:radius]) |> max(circle[:radius])
       }
     end)
   end
