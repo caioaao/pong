@@ -5,7 +5,7 @@ defmodule Pong.Core.Circle do
 
   @spec intersects_line_segment?(t(), LineSegment.t()) :: boolean()
   def intersects_line_segment?(circle, segment) do
-    LineSegment.distance_to_point(segment, circle[:center]) < circle[:radius]
+    LineSegment.distance_to_point(segment, circle[:center]) <= circle[:radius]
   end
 
   @spec intersects_rectangle?(t(), Rectangle.t()) :: boolean()
