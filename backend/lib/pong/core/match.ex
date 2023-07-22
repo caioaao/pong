@@ -1,5 +1,5 @@
 defmodule Pong.Core.Match do
-  alias Pong.Core.{Player, Ball, PlayerPad}
+  alias Pong.Core.{Player, Ball, PlayerPad, Field, Circle}
 
   @type created() :: %{
           state: :created,
@@ -15,6 +15,7 @@ defmodule Pong.Core.Match do
   @type in_progress() :: %{
           state: :in_progress,
           score: {number(), number()},
+          field: Field.t(),
           ball: Ball.t(),
           player1_pad: PlayerPad.t(),
           player2_pad: PlayerPad.t()
@@ -44,6 +45,15 @@ defmodule Pong.Core.Match do
     |> List.to_string()
   end
 
+  @spec create() :: created()
+  def create(millis_until_timeout \\ 60000) do
+    %{
+      state: :created,
+      millis_left_until_timeout: millis_until_timeout,
+      players_ready: MapSet.new()
+    }
+  end
+
   @spec start() :: in_progress()
   def start() do
     %{
@@ -52,9 +62,86 @@ defmodule Pong.Core.Match do
         geometry: %{radius: Ball.radius(), center: {50, 50}},
         velocity: Ball.initial_velocity()
       },
+      field: {100, 100},
       player1_pad: %{geometry: %{center: {50, 10}, width: 20, height: 2}},
       player2_pad: %{geometry: %{center: {50, 90}, width: 20, height: 2}},
       score: {0, 0}
     }
+  end
+
+  @spec record_point(Match.in_progress(), Player.id()) :: Match.in_progress() | Match.finished()
+  def record_point(match, player) do
+    match
+    |> Map.update!(:score, fn {p1, p2} ->
+      case player do
+        :player1 -> {p1 + 1, p2}
+        :player2 -> {p1, p2 + 1}
+      end
+    end)
+    |> reset_ball()
+    |> reset_pads()
+    |> case do
+      state = %{score: {p1, _}} when p1 >= 11 ->
+        %{state: :finished, winner: :player1, final_score: state[:score]}
+
+      state = %{score: {_, p2}} when p2 >= 11 ->
+        %{state: :finished, winner: :player2, final_score: state[:score]}
+
+      new_state ->
+        new_state
+    end
+  end
+
+  @spec reset_ball(Match.in_progress()) :: Match.in_progress()
+  def reset_ball(state) do
+    state
+    |> Map.update!(:ball, fn ball ->
+      ball
+      |> Map.update!(:geometry, &Map.put(&1, :center, Field.center(state[:field])))
+      |> Map.put(:velocity, Ball.initial_velocity())
+    end)
+  end
+
+  @spec reset_pads(Match.in_progress()) :: Match.in_progress()
+  def reset_pads(state) do
+    state
+    |> update_in([:player1_pad, :geometry, :center], fn {_, y} ->
+      {Field.center_x(state[:field]), y}
+    end)
+    |> update_in([:player2_pad, :geometry, :center], fn {_, y} ->
+      {Field.center_x(state[:field]), y}
+    end)
+  end
+
+  @spec ball_collision(Match.in_progress()) ::
+          :left_wall | :right_wall | :player1_pad | :player2_pad | :bottom_wall | :top_wall | nil
+  def ball_collision(%{
+        ball: ball,
+        field: field,
+        player1_pad: player1_pad,
+        player2_pad: player2_pad
+      }) do
+    cond do
+      Circle.intersects_line_segment?(ball[:geometry], Field.top_edge(field)) ->
+        :top_wall
+
+      Circle.intersects_line_segment?(ball[:geometry], Field.bottom_edge(field)) ->
+        :bottom_wall
+
+      Circle.intersects_line_segment?(ball[:geometry], Field.left_edge(field)) ->
+        :left_wall
+
+      Circle.intersects_line_segment?(ball[:geometry], Field.right_edge(field)) ->
+        :right_wall
+
+      Circle.intersects_rectangle?(ball[:geometry], player1_pad[:geometry]) ->
+        :player1_pad
+
+      Circle.intersects_rectangle?(ball[:geometry], player2_pad[:geometry]) ->
+        :player2_pad
+
+      :default ->
+        nil
+    end
   end
 end

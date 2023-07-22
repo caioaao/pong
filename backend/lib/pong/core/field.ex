@@ -1,5 +1,5 @@
 defmodule Pong.Core.Field do
-  alias Pong.Core.{LineSegment}
+  alias Pong.Core.{LineSegment, Point}
 
   def default_width, do: 100
   def default_height, do: 100
@@ -27,5 +27,20 @@ defmodule Pong.Core.Field do
   @spec bottom_edge(t()) :: LineSegment.t()
   def bottom_edge({width, _}) do
     {{0, 0}, {width, 0}}
+  end
+
+  @spec center_x(t()) :: Point.t()
+  def center_x({width, _}) do
+    width / 2
+  end
+
+  @spec center_y(t()) :: Point.t()
+  def center_y({_, height}) do
+    height / 2
+  end
+
+  @spec center(t()) :: Point.t()
+  def center(field) do
+    {center_x(field), center_y(field)}
   end
 end

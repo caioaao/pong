@@ -17,4 +17,10 @@ defmodule Pong.Core.Ball do
       |> Vector.scale(Vector.magnitude(ball[:velocity]))
     )
   end
+
+  @spec update_position(t(), number()) :: t()
+  def update_position(ball, ellapsed_millis) do
+    displacement = Vector.scale(ball[:velocity], ellapsed_millis / 1000)
+    Map.update!(ball, :geometry, &Circle.move(&1, displacement))
+  end
 end
