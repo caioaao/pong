@@ -149,4 +149,14 @@ defmodule Pong.Core.Match do
         nil
     end
   end
+
+  @spec pause(in_progress()) :: paused()
+  def pause(state) do
+    %{state: :paused, prev_state: state}
+  end
+
+  @spec unpause(paused()) :: in_progress()
+  def unpause(state) do
+    state[:prev_state]
+  end
 end
