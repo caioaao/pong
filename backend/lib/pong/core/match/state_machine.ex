@@ -13,7 +13,7 @@ defmodule Pong.Core.Match.StateMachine do
 
   [1] https://www.erlang.org/doc/design_principles/statem.html
   """
-  alias Pong.Core.{Match}
+  alias Pong.Core.{Match, Ball, PlayerPad}
   alias Pong.Core.Match.{Event}
 
   @spec process_event(Match.state(), Event.t()) :: Match.state()
@@ -63,11 +63,64 @@ defmodule Pong.Core.Match.StateMachine do
   ######################################
   # IN PROGRESS state processing functions
   ######################################
-  def process_event(
-        state = %{state: :in_progress},
-        {:tick, _}
-      ) do
-    state
+  def process_event(state, {:tick, ellapsed_millis}) do
+    state = Map.update!(state, :ball, &Ball.update_position(&1, ellapsed_millis))
+
+    case Match.ball_collision(state) do
+      :top_wall ->
+        Match.record_point(state, :player1)
+
+      :bottom_wall ->
+        Match.record_point(state, :player2)
+
+      :left_wall ->
+        update_in(state, [:ball, :velocity], fn {x, y} -> {-x, y} end)
+
+      :right_wall ->
+        update_in(state, [:ball, :velocity], fn {x, y} -> {-x, y} end)
+
+      :player1_pad ->
+        Map.update!(
+          state,
+          :ball,
+          &Ball.redirect_away_from_point(&1, state[:player1_pad][:geometry][:center])
+        )
+
+      :player2_pad ->
+        Map.update!(
+          state,
+          :ball,
+          &Ball.redirect_away_from_point(&1, state[:player2_pad][:geometry][:center])
+        )
+
+      nil ->
+        state
+    end
+  end
+
+  def process_event(%{state: :in_progress} = state, {:player_request, :pause, _}) do
+    Match.pause(state)
+  end
+
+  def process_event(%{state: :in_progress} = state, {:player_request, :move_left, player}) do
+    case player do
+      :player1 -> Map.update!(state, :player1_pad, &PlayerPad.move_left(&1))
+      :player2 -> Map.update!(state, :player2_pad, &PlayerPad.move_left(&1))
+    end
+  end
+
+  def process_event(%{state: :in_progress} = state, {:player_request, :move_right, player}) do
+    case player do
+      :player1 -> Map.update!(state, :player1_pad, &PlayerPad.move_right(&1))
+      :player2 -> Map.update!(state, :player2_pad, &PlayerPad.move_right(&1))
+    end
+  end
+
+  ######################################
+  # PAUSED state processing functions
+  ######################################
+  def process_event(%{state: :paused} = state, {:player_request, :unpause, _}) do
+    Match.unpause(state)
   end
 
   def process_event(state, _evt) do
