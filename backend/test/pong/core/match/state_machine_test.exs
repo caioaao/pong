@@ -14,6 +14,7 @@ defmodule Pong.Core.Match.StateMachineTest do
 
   require Pong.Core.Match.StateMachineTest.StateTransition
   alias Pong.Core.Match.StateMachineTest.{StateTransition}
+  alias Pong.Core.{Match}
 
   StateTransition.test(
     "from created with small tick",
@@ -89,13 +90,13 @@ defmodule Pong.Core.Match.StateMachineTest do
     "from starting with delta time matching millis left",
     %{state: :starting, millis_left_until_start: 1230},
     {:tick, 1230},
-    %{state: :in_progress}
+    Match.start()
   )
 
   StateTransition.test(
     "from starting with delta time bigger than millis left",
     %{state: :starting, millis_left_until_start: 1230},
     {:tick, 9001},
-    %{state: :in_progress}
+    Match.start()
   )
 end
