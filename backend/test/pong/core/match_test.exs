@@ -76,4 +76,70 @@ defmodule Pong.Core.MatchTest do
              }
     end
   end
+
+  describe "detect ball collision" do
+    test "collides with left wall" do
+      assert Match.ball_collision(%{
+               ball: %{geometry: %{center: {1, 12}, radius: 1}, velocity: {10, 10}},
+               field: {30, 30},
+               player1_pad: random_player_pad(),
+               player2_pad: random_player_pad()
+             }) == :left_wall
+    end
+
+    test "collides with right wall" do
+      assert Match.ball_collision(%{
+               ball: %{geometry: %{center: {29, 12}, radius: 1}, velocity: {10, 10}},
+               field: {30, 30},
+               player1_pad: random_player_pad(),
+               player2_pad: random_player_pad()
+             }) == :right_wall
+    end
+
+    test "collides with top wall" do
+      assert Match.ball_collision(%{
+               ball: %{geometry: %{center: {8, 29}, radius: 1}, velocity: {10, 10}},
+               field: {30, 30},
+               player1_pad: random_player_pad(),
+               player2_pad: random_player_pad()
+             }) == :top_wall
+    end
+
+    test "collides with bottom wall" do
+      assert Match.ball_collision(%{
+               ball: %{geometry: %{center: {8, 1}, radius: 1}, velocity: {10, 10}},
+               field: {30, 30},
+               player1_pad: random_player_pad(),
+               player2_pad: random_player_pad()
+             }) == :bottom_wall
+    end
+
+    test "collides with player 1's pad" do
+      assert Match.ball_collision(%{
+               ball: %{geometry: %{center: {8, 8}, radius: 1}, velocity: {10, 10}},
+               field: {30, 30},
+               player1_pad: %{geometry: %{center: {7, 7}, width: 2, height: 2}},
+               player2_pad: random_player_pad()
+             }) == :player1_pad
+    end
+
+    test "collides with player 2's pad" do
+      assert Match.ball_collision(%{
+               ball: %{geometry: %{center: {8, 8}, radius: 1}, velocity: {10, 10}},
+               field: {30, 30},
+               player1_pad: random_player_pad(),
+               player2_pad: %{geometry: %{center: {7, 7}, width: 2, height: 2}}
+             }) == :player2_pad
+    end
+  end
+
+  defp random_player_pad() do
+    %{
+      geometry: %{
+        center: {:rand.uniform(), :rand.uniform()},
+        width: :rand.uniform(),
+        height: :rand.uniform()
+      }
+    }
+  end
 end

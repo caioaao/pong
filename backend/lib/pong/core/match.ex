@@ -102,7 +102,7 @@ defmodule Pong.Core.Match do
     end)
   end
 
-  @spec reset_pads(Match.in_progress()) :: Match.in_progress()
+  @spec reset_pads(in_progress()) :: in_progress()
   def reset_pads(state) do
     state
     |> update_in([:player1_pad, :geometry, :center], fn {_, y} ->
@@ -113,7 +113,12 @@ defmodule Pong.Core.Match do
     end)
   end
 
-  @spec ball_collision(Match.in_progress()) ::
+  @spec ball_collision(%{
+          ball: Ball.t(),
+          field: Field.t(),
+          player1_pad: PlayerPad.t(),
+          player2_pad: PlayerPad.t()
+        }) ::
           :left_wall | :right_wall | :player1_pad | :player2_pad | :bottom_wall | :top_wall | nil
   def ball_collision(%{
         ball: ball,
