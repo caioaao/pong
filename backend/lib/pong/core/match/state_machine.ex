@@ -107,14 +107,14 @@ defmodule Pong.Core.Match.StateMachine do
     Match.pause(state)
   end
 
-  def process_event(%{state: :in_progress} = state, {:player_request, :move_left, player}) do
+  def process_event(%{state: :in_progress} = state, {:player_request, :move_pad_left, player}) do
     case player do
       :player1 -> Map.update!(state, :player1_pad, &PlayerPad.move_left(&1))
       :player2 -> Map.update!(state, :player2_pad, &PlayerPad.move_left(&1))
     end
   end
 
-  def process_event(%{state: :in_progress} = state, {:player_request, :move_right, player}) do
+  def process_event(%{state: :in_progress} = state, {:player_request, :move_pad_right, player}) do
     case player do
       :player1 -> Map.update!(state, :player1_pad, &PlayerPad.move_right(&1))
       :player2 -> Map.update!(state, :player2_pad, &PlayerPad.move_right(&1))
