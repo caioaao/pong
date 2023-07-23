@@ -97,10 +97,21 @@ defmodule Pong.Core.Match.StateMachineTest do
       }
     ]
 
-    Enum.zip_reduce([events, expected_states], s0, fn [evt, expected_state], curr_state ->
-      new_state = StateMachine.process_event(curr_state, evt)
-      assert new_state == expected_state
-      new_state
-    end)
+    last_state =
+      Enum.zip_reduce([events, expected_states], s0, fn [evt, expected_state], curr_state ->
+        new_state = StateMachine.process_event(curr_state, evt)
+        assert new_state == expected_state
+        new_state
+      end)
+
+    # advance to final stage
+    final_state =
+      Stream.repeatedly(fn -> {:tick, 100} end)
+      |> Enum.take(1000)
+      |> Enum.reduce(last_state, fn evt, curr_state ->
+        StateMachine.process_event(curr_state, evt)
+      end)
+
+    assert final_state == %{state: :finished, winner: :player2, final_score: {0, 11}}
   end
 end

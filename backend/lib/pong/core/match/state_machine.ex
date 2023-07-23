@@ -63,7 +63,7 @@ defmodule Pong.Core.Match.StateMachine do
   ######################################
   # IN PROGRESS state processing functions
   ######################################
-  def process_event(state, {:tick, ellapsed_millis}) do
+  def process_event(%{state: :in_progress} = state, {:tick, ellapsed_millis}) do
     state = Map.update!(state, :ball, &Ball.update_position(&1, ellapsed_millis))
 
     case Match.ball_collision(state) do
