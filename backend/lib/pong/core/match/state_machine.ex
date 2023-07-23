@@ -16,6 +16,11 @@ defmodule Pong.Core.Match.StateMachine do
   alias Pong.Core.{Match, Ball, PlayerPad}
   alias Pong.Core.Match.{Event}
 
+  @spec halt?(Match.state()) :: boolean()
+  def halt?(%{state: :canceled}), do: true
+  def halt?(%{state: :finished}), do: true
+  def halt?(_), do: false
+
   @spec process_event(Match.state(), Event.t()) :: Match.state()
 
   ######################################
