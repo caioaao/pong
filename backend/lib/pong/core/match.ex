@@ -1,6 +1,8 @@
 defmodule Pong.Core.Match do
   alias Pong.Core.{Player, Ball, PlayerPad, Field, Circle}
 
+  @type score() :: {number(), number()}
+
   @type created() :: %{
           state: :created,
           millis_left_until_timeout: number(),
@@ -14,7 +16,7 @@ defmodule Pong.Core.Match do
 
   @type in_progress() :: %{
           state: :in_progress,
-          score: {number(), number()},
+          score: score(),
           field: Field.t(),
           ball: Ball.t(),
           player1_pad: PlayerPad.t(),
@@ -29,7 +31,7 @@ defmodule Pong.Core.Match do
   @type finished() :: %{
           state: :finished,
           winner: Player.id(),
-          final_score: {number(), number()}
+          final_score: score()
         }
 
   @type canceled() :: %{state: :canceled}
