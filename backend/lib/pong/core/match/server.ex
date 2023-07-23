@@ -30,24 +30,29 @@ defmodule Pong.Core.Match.Server do
 
   @impl true
   def init([]) do
-    {:ok, Match.start()}
+    {:ok, %{match: Match.start()}}
   end
 
   @impl true
-  def handle_call(:lookup_state, _from, match_state) do
-    {:reply, match_state, match_state}
+  def handle_call(:lookup_state, _from, state) do
+    {:reply, state[:match], state}
   end
 
   @impl true
-  def handle_cast({:process_event, evt}, match_state) do
-    {:noreply, StateMachine.process_event(match_state, evt)}
+  def handle_cast({:process_event, evt}, state) do
+    {:noreply, Map.update!(state, :match, &StateMachine.process_event(&1, evt))}
   end
 
   @impl true
-  def handle_info(:tick, match_state) do
-    new_state = StateMachine.process_event(match_state, {:tick, @fixed_delta_time_millis})
+  def handle_info(:tick, state) do
+    new_state =
+      Map.update!(
+        state,
+        :match,
+        &StateMachine.process_event(&1, {:tick, @fixed_delta_time_millis})
+      )
 
-    unless StateMachine.halt?(new_state) do
+    unless StateMachine.halt?(new_state[:match]) do
       schedule_next_update(self())
     end
 
