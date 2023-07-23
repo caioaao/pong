@@ -1,21 +1,10 @@
 <script lang="ts">
-	import { gameState } from './game-state-store';
+	import { matchState } from './match-state-store';
 	import Overlay from './ui/Overlay.svelte';
-
-	let winnerID: 1 | 2;
-	$: {
-		if ($gameState.finished) {
-			if ($gameState.score.player1 > $gameState.score.player2) {
-				winnerID = 1;
-			} else {
-				winnerID = 2;
-			}
-		}
-	}
 </script>
 
-{#if winnerID}
+{#if $matchState.state === 'finished'}
 	<Overlay>
-		Player {winnerID} wins!
+		Player {$matchState.winner === 'player1' ? 1 : 2} wins!
 	</Overlay>
 {/if}

@@ -47,6 +47,7 @@ export const matchSchema = z.discriminatedUnion("state", [
 	newMatchSchema,
 	startingMatchSchema,
 	inProgressMatchSchema,
+	pausedMatchSchema,
 	finishedMatchSchema,
 	canceledMatchSchema,
 ])

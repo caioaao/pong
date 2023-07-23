@@ -6,14 +6,14 @@
 	import WinnerBanner from '$lib/WinnerBanner.svelte';
 	import GameScene from '$lib/GameScene.svelte';
 	import { connectToBackend } from '$lib/ws';
-	import { gameState } from '$lib/game-state-store';
 	import pauseIconURL from '$lib/assets/pause-icon.svg';
+	import { matchState, score } from './match-state-store';
 
 	export let websocketURL = 'ws://localhost:4000/ws/dummy';
 
 	let socket: WebSocket;
 
-	$: isPaused = $gameState.isPaused;
+	$: isPaused = $matchState?.state === 'paused';
 
 	onMount(() => {
 		const openingSocket = connectToBackend(websocketURL);
@@ -55,22 +55,34 @@
 	<header>
 		<h1>Pong</h1>
 		<div class="score">
-			{$gameState.score.player1} - {$gameState.score.player2}
+			{#if $score}
+				{$score.player1} - {$score.player2}
+			{/if}
 		</div>
 	</header>
 	<GameScene>
-		{#if $gameState.millisUntilStart}
-			<Overlay>Game starts in {Math.round($gameState.millisUntilStart / 1000)}...</Overlay>
-		{/if}
+		{#if $matchState}
+			{#if $matchState.state === 'starting'}
+				<Overlay>Game starts in {Math.round($matchState.millis_left_until_start / 1000)}...</Overlay
+				>
+			{/if}
 
-		{#if isPaused}
-			<img class="pause-icon" src={pauseIconURL} alt="paused" />
-		{/if}
+			{#if isPaused}
+				<img class="pause-icon" src={pauseIconURL} alt="paused" />
+			{/if}
 
-		<WinnerBanner />
-		<Pad viewportSize={600} {...$gameState.player1Pad.geometry} />
-		<Pad viewportSize={600} {...$gameState.player2Pad.geometry} />
-		<Ball viewportSize={600} {...$gameState.ball.geometry} />
+			<WinnerBanner />
+			{#if $matchState.state === 'in_progress'}
+				<Pad viewportSize={600} {...$matchState.player1_pad.geometry} />
+				<Pad viewportSize={600} {...$matchState.player2_pad.geometry} />
+				<Ball viewportSize={600} {...$matchState.ball.geometry} />
+			{/if}
+			{#if $matchState.state === 'paused'}
+				<Pad viewportSize={600} {...$matchState.prev_state.player1_pad.geometry} />
+				<Pad viewportSize={600} {...$matchState.prev_state.player2_pad.geometry} />
+				<Ball viewportSize={600} {...$matchState.prev_state.ball.geometry} />
+			{/if}
+		{/if}
 	</GameScene>
 </main>
 
