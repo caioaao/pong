@@ -63,23 +63,14 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
 
   def websocket_info(:tick_state, server) do
     Process.send_after(self(), :tick_state, div(1000, 60))
-    reply_with_game_state(MatchServer.state(server), server)
+    reply_with_match(MatchServer.state(server), server)
   end
 
   def websocket_info(_, state) do
     {:ok, state}
   end
 
-  defp reply_with_game_state(s, state) do
-    s
-    |> Pong.Api.Http.Encode.state_to_wire()
-    |> case do
-      {:ok, payload} ->
-        {:reply, {:text, payload}, state}
-
-      err ->
-        Logger.error("failed to encode state", err)
-        {:close, state}
-    end
+  defp reply_with_match(match, ws_state) do
+    {:reply, {:text, Pong.WireSchema.Json.Match.marshal(match)}, ws_state}
   end
 end

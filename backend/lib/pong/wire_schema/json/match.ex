@@ -98,6 +98,6 @@ defmodule Pong.WireSchema.Json.Match do
 
   @spec reshape_geom_center(%{geometry: %{center: Point.t()}}) :: pad()
   defp reshape_geom_center(obj) do
-    Map.update_in(obj, [:geometry, :center], &reshape_xy/1)
+    update_in(obj, [:geometry, :center], &reshape_xy/1)
   end
 end
