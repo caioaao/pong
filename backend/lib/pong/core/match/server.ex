@@ -1,6 +1,7 @@
 defmodule Pong.Core.Match.Server do
   use GenServer, restart: :temporary
-  alias Pong.Core.{GameState}
+  alias Pong.Core.{Match}
+  alias Pong.Core.Match.{Event, StateMachine}
 
   # tick rate in Hz
   @tick_rate 64
@@ -17,8 +18,9 @@ defmodule Pong.Core.Match.Server do
     end
   end
 
-  def process_command(server, cmd) do
-    GenServer.cast(server, {:process_command, cmd})
+  @spec process_event(pid(), Event.t()) :: :ok
+  def process_event(server, evt) do
+    GenServer.cast(server, {:process_event, evt})
   end
 
   @spec state(pid()) :: GameState.t()
@@ -28,24 +30,24 @@ defmodule Pong.Core.Match.Server do
 
   @impl true
   def init([]) do
-    {:ok, GameState.new()}
+    {:ok, Match.start()}
   end
 
   @impl true
-  def handle_call(:lookup_state, _from, game_state) do
-    {:reply, game_state, game_state}
+  def handle_call(:lookup_state, _from, match_state) do
+    {:reply, match_state, match_state}
   end
 
   @impl true
-  def handle_cast({:process_command, cmd}, game_state) do
-    {:noreply, GameState.process_command(game_state, cmd)}
+  def handle_cast({:process_event, evt}, match_state) do
+    {:noreply, StateMachine.process_event(match_state, evt)}
   end
 
   @impl true
-  def handle_info(:tick, game_state) do
-    {result, new_state} = GameState.next(game_state, @fixed_delta_time_millis)
+  def handle_info(:tick, match_state) do
+    new_state = StateMachine.process_event(match_state, {:tick, @fixed_delta_time_millis})
 
-    if result == :cont do
+    unless StateMachine.halt?(new_state) do
       schedule_next_update(self())
     end
 

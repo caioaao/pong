@@ -31,22 +31,22 @@ defmodule Pong.Api.Http.WebSocketHandler do
   end
 
   def websocket_handle({:text, "move_left"}, %{player: player, match_pid: match_pid} = state) do
-    MatchServer.process_command(match_pid, {:move_left, player})
+    MatchServer.process_event(match_pid, {:player_request, :move_pad_left, player})
     {:ok, state}
   end
 
   def websocket_handle({:text, "move_right"}, %{player: player, match_pid: match_pid} = state) do
-    MatchServer.process_command(match_pid, {:move_right, player})
+    MatchServer.process_event(match_pid, {:player_request, :move_pad_right, player})
     {:ok, state}
   end
 
   def websocket_handle({:text, "pause"}, %{player: player, match_pid: match_pid} = state) do
-    MatchServer.process_command(match_pid, {:pause, player})
+    MatchServer.process_event(match_pid, {:player_request, :pause, player})
     {:ok, state}
   end
 
   def websocket_handle({:text, "unpause"}, %{player: player, match_pid: match_pid} = state) do
-    MatchServer.process_command(match_pid, {:unpause, player})
+    MatchServer.process_event(match_pid, {:player_request, :unpause, player})
     {:ok, state}
   end
 

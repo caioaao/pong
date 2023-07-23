@@ -4,9 +4,9 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
 
   @behaviour :cowboy_websocket
 
-  @possible_commands [
-    {:move_left, :player2},
-    {:move_right, :player2}
+  @possible_events [
+    {:player_request, :move_pad_left, :player2},
+    {:player_request, :move_pad_right, :player2}
   ]
 
   def init(request, state) do
@@ -18,8 +18,8 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
       Process.send(self(), :tick_state, [])
       Process.send(self(), :tick_cmd, [])
 
-      MatchServer.process_command(server, {:ready, :player1})
-      MatchServer.process_command(server, {:ready, :player2})
+      MatchServer.process_event(server, {:player_request, :join_match, :player1})
+      MatchServer.process_event(server, {:player_request, :join_match, :player2})
 
       {:ok, server}
     end
@@ -31,22 +31,22 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
   end
 
   def websocket_handle({:text, "move_left"}, server) do
-    MatchServer.process_command(server, {:move_left, :player1})
+    MatchServer.process_event(server, {:player_request, :move_pad_left, :player1})
     {:ok, server}
   end
 
   def websocket_handle({:text, "move_right"}, server) do
-    MatchServer.process_command(server, {:move_right, :player1})
+    MatchServer.process_event(server, {:player_request, :move_pad_right, :player1})
     {:ok, server}
   end
 
   def websocket_handle({:text, "pause"}, server) do
-    MatchServer.process_command(server, {:pause, :player1})
+    MatchServer.process_event(server, {:player_request, :pause, :player1})
     {:ok, server}
   end
 
   def websocket_handle({:text, "unpause"}, server) do
-    MatchServer.process_command(server, {:unpause, :player1})
+    MatchServer.process_event(server, {:player_request, :unpause, :player1})
     {:ok, server}
   end
 
@@ -57,7 +57,7 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
 
   def websocket_info(:tick_cmd, server) do
     Process.send_after(self(), :tick_cmd, 400)
-    MatchServer.process_command(server, Enum.random(@possible_commands))
+    MatchServer.process_event(server, Enum.random(@possible_events))
     {:ok, server}
   end
 
