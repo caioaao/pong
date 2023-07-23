@@ -1,7 +1,7 @@
 defmodule Pong.Core.Match.Server do
   use GenServer, restart: :temporary
   alias Pong.Core.{Match}
-  alias Pong.Core.Match.{Event, StateMachine}
+  alias Pong.Core.Match.{Event, StateMachine, Broadcaster}
 
   # tick rate in Hz
   @tick_rate 64
@@ -28,9 +28,22 @@ defmodule Pong.Core.Match.Server do
     GenServer.call(server, :lookup_state)
   end
 
+  def subscribe(server, handler, opts) do
+    GenServer.call(server, {:add_event_handler, handler, opts})
+  end
+
   @impl true
   def init([]) do
-    {:ok, %{match: Match.start()}}
+    with {:ok, broadcaster} <- DynamicSupervisor.start_link(Broadcaster, []) do
+      match = Match.start()
+      Broadcaster.broadcast(broadcaster, match)
+
+      {:ok,
+       %{
+         match: match,
+         match_broadcaster: broadcaster
+       }}
+    end
   end
 
   @impl true
@@ -39,18 +52,18 @@ defmodule Pong.Core.Match.Server do
   end
 
   @impl true
+  def handle_call({:register_event_handler, child_spec}, _from, state) do
+    Broadcaster.add_handler(state[:match_broadcaster], child_spec)
+  end
+
+  @impl true
   def handle_cast({:process_event, evt}, state) do
-    {:noreply, Map.update!(state, :match, &StateMachine.process_event(&1, evt))}
+    {:noreply, update_and_broadcast_match(state, evt)}
   end
 
   @impl true
   def handle_info(:tick, state) do
-    new_state =
-      Map.update!(
-        state,
-        :match,
-        &StateMachine.process_event(&1, {:tick, @fixed_delta_time_millis})
-      )
+    new_state = update_and_broadcast_match(state, {:tick, @fixed_delta_time_millis})
 
     unless StateMachine.halt?(new_state[:match]) do
       schedule_next_update(self())
@@ -61,5 +74,14 @@ defmodule Pong.Core.Match.Server do
 
   defp schedule_next_update(server) do
     Process.send_after(server, :tick, @fixed_delta_time_millis)
+  end
+
+  defp update_and_broadcast_match(
+         %{match: match, match_broadcaster: match_broadcaster} = state,
+         evt
+       ) do
+    match = StateMachine.process_event(match, evt)
+    Broadcaster.broadcast(match_broadcaster, match)
+    Map.put(state, :match, match)
   end
 end
