@@ -5,10 +5,10 @@
 			<a href="/single-player"> Single Player </a>
 		</li>
 		<li>
-			<a href="/multiplayer/new-match"> Create Match </a>
+			<a href="/pvp/new-match"> Play with friend </a>
 		</li>
 		<li>
-			<a href="/multiplayer/join-match"> Join Match </a>
+			<a href="/pvp/join-match"> Join Match </a>
 		</li>
 	</ul>
 </nav>
