@@ -9,6 +9,10 @@ defmodule Pong.Core.Match.Registry.V2 do
     Registry.start_link(keys: :unique, name: __MODULE__)
   end
 
+  def child_spec(_) do
+    Registry.child_spec(keys: :unique, name: Pong.Core.Match.Registry.V2)
+  end
+
   @spec start_match(player1: String.t(), player2: String.t()) :: entry()
   def start_match([player1: player1, player2: player2] = opts) do
     match_id = Match.gen_id()
