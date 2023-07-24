@@ -1,6 +1,8 @@
 defmodule Pong.Core.Match do
   alias Pong.Core.{Player, Ball, PlayerPad, Field, Circle}
 
+  @type id() :: String.t()
+
   @type score() :: {number(), number()}
 
   @type created() :: %{
@@ -39,6 +41,9 @@ defmodule Pong.Core.Match do
   @type state() :: created() | starting() | in_progress() | finished() | canceled()
 
   @match_id_chars "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+  @spec gen_id() :: Match.id()
+  @spec gen_id(integer()) :: Match.it()
 
   def gen_id(len \\ 8) do
     Stream.repeatedly(fn -> :rand.uniform(String.length(@match_id_chars)) - 1 end)
