@@ -1,19 +1,20 @@
 defmodule Pong.Api.Http.Router do
   use Plug.Router
 
+  if Mix.env() == :dev do
+    use Plug.Debugger
+  end
+
   alias Pong.Core.Match.Registry.V2, as: MatchRegistry
 
-  plug(Plug.Static,
-    at: "/",
-    from: :backend_app
-  )
+  plug(:match)
+  plug(:cors)
 
   plug(Plug.Parsers,
     parsers: [:urlencoded, :json],
     json_decoder: Jason
   )
 
-  plug(:match)
   plug(:dispatch)
 
   get "/" do
@@ -27,6 +28,7 @@ defmodule Pong.Api.Http.Router do
 
         conn
         |> put_resp_content_type("application/json")
+        |> put_resp_header("Access-Control-Allow-Origin", "*")
         |> send_resp(200, ~s({"match_id":"#{match_id}"}))
 
       _ ->
@@ -34,7 +36,18 @@ defmodule Pong.Api.Http.Router do
     end
   end
 
+  options _ do
+    send_resp(conn, 200, "")
+  end
+
   match _ do
     send_resp(conn, 404, "Not found")
+  end
+
+  def cors(conn, _) do
+    conn
+    |> put_resp_header("Access-Control-Allow-Origin", "*")
+    |> put_resp_header("Access-Control-Allow-Methods", "*")
+    |> put_resp_header("Access-Control-Allow-Headers", "*")
   end
 end
