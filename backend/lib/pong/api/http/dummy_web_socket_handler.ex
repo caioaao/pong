@@ -1,5 +1,6 @@
 defmodule Pong.Api.Http.DummyWebSocketHandler do
   alias Pong.Core.Match.Server, as: MatchServer
+  alias Pong.Api.Http.WebSocket.{MatchSubscription}
   require Logger
 
   @behaviour :cowboy_websocket
@@ -15,7 +16,7 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
 
   def websocket_init(_state) do
     with {:ok, server} <- MatchServer.start_link([]) do
-      Process.send(self(), :tick_state, [])
+      MatchServer.subscribe(server, MatchSubscription.child_spec(self()))
       Process.send(self(), :tick_cmd, [])
 
       MatchServer.process_event(server, {:player_request, :join_match, :player1})
@@ -61,9 +62,8 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
     {:ok, server}
   end
 
-  def websocket_info(:tick_state, server) do
-    Process.send_after(self(), :tick_state, div(1000, 60))
-    reply_with_match(MatchServer.state(server), server)
+  def websocket_info({:match_state, match}, server) do
+    reply_with_match(match, server)
   end
 
   def websocket_info(_, state) do

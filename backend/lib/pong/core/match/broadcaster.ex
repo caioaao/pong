@@ -16,13 +16,13 @@ defmodule Pong.Core.Match.Broadcaster do
 
   @spec add_handler(pid(), Supervisor.child_spec()) :: :ok
   def(add_handler(sup, child_spec)) do
-    DynamicSupervisor.start_child(sup, child_spec)
+    {:ok, _} = IO.inspect(DynamicSupervisor.start_child(sup, child_spec))
     :ok
   end
 
   def broadcast(sup, match) do
     for {_, child_pid, _, _} <- DynamicSupervisor.which_children(sup) do
-      GenServer.cast(child_pid, {:state_changed, match})
+      GenServer.cast(child_pid, {:match_state, match})
     end
   end
 

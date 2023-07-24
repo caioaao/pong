@@ -28,8 +28,8 @@ defmodule Pong.Core.Match.Server do
     GenServer.call(server, :lookup_state)
   end
 
-  def subscribe(server, handler, opts) do
-    GenServer.call(server, {:add_event_handler, handler, opts})
+  def subscribe(server, child_spec) do
+    GenServer.call(server, {:add_subscription, child_spec})
   end
 
   @impl true
@@ -52,8 +52,9 @@ defmodule Pong.Core.Match.Server do
   end
 
   @impl true
-  def handle_call({:register_event_handler, child_spec}, _from, state) do
+  def handle_call({:add_subscription, child_spec}, _from, state) do
     Broadcaster.add_handler(state[:match_broadcaster], child_spec)
+    {:reply, :ok, state}
   end
 
   @impl true
