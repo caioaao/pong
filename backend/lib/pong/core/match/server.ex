@@ -35,7 +35,7 @@ defmodule Pong.Core.Match.Server do
   @impl true
   def init([]) do
     with {:ok, broadcaster} <- DynamicSupervisor.start_link(Broadcaster, []) do
-      match = Match.start()
+      match = Match.create()
       Broadcaster.broadcast(broadcaster, match)
 
       {:ok,

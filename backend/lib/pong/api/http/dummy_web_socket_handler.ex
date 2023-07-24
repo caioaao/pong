@@ -19,10 +19,11 @@ defmodule Pong.Api.Http.DummyWebSocketHandler do
   def websocket_init(_state) do
     with {:ok, server} <- MatchServer.start_link([]) do
       MatchServer.subscribe(server, MatchSubscription.child_spec(self()))
-      Process.send(self(), :tick_cmd, [])
 
       MatchServer.process_event(server, {:player_request, :join_match, :player1})
       MatchServer.process_event(server, {:player_request, :join_match, :player2})
+
+      Process.send(self(), :tick_cmd, [])
 
       {:ok, server}
     end
