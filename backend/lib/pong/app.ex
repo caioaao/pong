@@ -28,8 +28,8 @@ defmodule Pong.App do
     [
       {:_,
        [
-         {"/ws/dummy", Pong.Api.Http.DummyWebSocketHandler, []},
-         {"/ws/[...]", Pong.Api.Http.WebSocketHandler, []},
+         {"/ws/solo", Pong.Api.Http.DummyWebSocketHandler, []},
+         {"/ws/pvp", Pong.Api.Http.WebSocketHandler, []},
          {:_, Plug.Cowboy.Handler, {Pong.Api.Http.Router, []}}
        ]}
     ]
