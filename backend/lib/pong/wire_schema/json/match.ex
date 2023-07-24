@@ -83,6 +83,8 @@ defmodule Pong.WireSchema.Json.Match do
     Map.update!(state, :final_score, &reshape_score/1)
   end
 
+  defp reshape_state(state), do: state
+
   @spec reshape_score(Match.score()) :: score()
   defp reshape_score({p1, p2}), do: %{player1: p1, player2: p2}
 
