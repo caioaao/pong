@@ -24,8 +24,9 @@ defmodule Pong.Api.Http.WebSocketHandler do
   end
 
   @impl true
-  def websocket_init(%{match_pid: match_pid} = state) do
+  def websocket_init(%{match_pid: match_pid, player: player_id} = state) do
     MatchServer.subscribe(match_pid, MatchSubscription.child_spec(self()))
+    MatchServer.process_event(match_pid, {:player_request, :join_match, player_id})
     {:ok, Map.put(state, :match_ref, Process.monitor(match_pid))}
   end
 
@@ -68,6 +69,11 @@ defmodule Pong.Api.Http.WebSocketHandler do
   @impl true
   def websocket_info({:DOWN, ref, :process, _, _}, %{match_ref: ref} = state) do
     {:stop, state}
+  end
+
+  @impl true
+  def websocket_info({:match_state, match}, state) do
+    {:reply, {:text, Pong.WireSchema.Json.Match.marshal(match)}, state}
   end
 
   @impl true
