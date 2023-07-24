@@ -62,9 +62,13 @@
 	</header>
 	<GameScene>
 		{#if $matchState}
-			{#if $matchState.state === 'starting'}
+			{#if $matchState.state === 'created'}
+				<Overlay>Waiting on the other player</Overlay>
+			{:else if $matchState.state === 'starting'}
 				<Overlay>Game starts in {Math.round($matchState.millis_left_until_start / 1000)}...</Overlay
 				>
+			{:else if $matchState.state === 'canceled'}
+				<Overlay>This game was canceled :(</Overlay>
 			{/if}
 
 			{#if isPaused}
