@@ -3,6 +3,7 @@ defmodule Pong.Api.Http.WebSocketHandler do
 
   alias Pong.Core.Match.Server, as: MatchServer
   alias Pong.Core.Match.Registry.V2, as: MatchRegistry
+  alias Pong.Api.Http.WebSocket.{MatchSubscription}
   require Logger
 
   @impl true
@@ -24,10 +25,8 @@ defmodule Pong.Api.Http.WebSocketHandler do
 
   @impl true
   def websocket_init(%{match_pid: match_pid} = state) do
-    ref = Process.monitor(match_pid)
-
-    Process.send(self(), :poll_state, [])
-    {:ok, Map.put(state, :match_ref, ref)}
+    MatchServer.subscribe(match_pid, MatchSubscription.child_spec(self()))
+    {:ok, Map.put(state, :match_ref, Process.monitor(match_pid))}
   end
 
   @impl true
@@ -69,23 +68,6 @@ defmodule Pong.Api.Http.WebSocketHandler do
   @impl true
   def websocket_info({:DOWN, ref, :process, _, _}, %{match_ref: ref} = state) do
     {:stop, state}
-  end
-
-  @impl true
-  def websocket_info(:poll_state, %{match_pid: match_pid} = state) do
-    Process.send_after(self(), :poll_state, div(1000, 60))
-
-    match_pid
-    |> Pong.Core.Match.Server.state()
-    |> Pong.Api.Http.Encode.state_to_wire()
-    |> case do
-      {:ok, payload} ->
-        {:reply, {:text, payload}, state}
-
-      err ->
-        Logger.error("failed to encode state", err)
-        {:close, state}
-    end
   end
 
   @impl true
