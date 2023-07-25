@@ -24,9 +24,11 @@ defmodule Pong.Core.Match.Registry.V2 do
     end
   end
 
-  @spec lookup(String.t()) :: entry()
+  @spec lookup(String.t()) :: {:ok, entry()} | {:error, :match_not_found}
   def lookup(match_id) do
-    [{match_pid, match_metadata}] = Registry.lookup(__MODULE__, match_id)
-    {match_id, match_pid, match_metadata}
+    case Registry.lookup(__MODULE__, match_id) do
+      [{match_pid, match_metadata}] -> {:ok, {match_id, match_pid, match_metadata}}
+      [] -> {:error, :match_not_found}
+    end
   end
 end

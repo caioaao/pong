@@ -11,10 +11,10 @@ defmodule Pong.Api.Http.WebSocketHandler do
     %{player: username, match: match_id} = :cowboy_req.match_qs([:player, :match], request)
 
     case MatchRegistry.lookup(match_id) do
-      {_, match_pid, %{player1: ^username}} ->
+      {:ok, {_, match_pid, %{player1: ^username}}} ->
         {:cowboy_websocket, request, %{match_pid: match_pid, player: :player1}}
 
-      {_, match_pid, %{player2: ^username}} ->
+      {:ok, {_, match_pid, %{player2: ^username}}} ->
         {:cowboy_websocket, request, %{match_pid: match_pid, player: :player2}}
 
       # TODO join as spectator

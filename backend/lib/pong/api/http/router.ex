@@ -22,12 +22,17 @@ defmodule Pong.Api.Http.Router do
   end
 
   get "/matches/:match_id/players" do
-    {_, _, %{player1: player1, player2: player2}} = MatchRegistry.lookup(match_id)
-    {:ok, res_body} = Jason.encode(%{player1: player1, player2: player2})
+    case MatchRegistry.lookup(match_id) do
+      {:ok, {_, _, %{player1: player1, player2: player2}}} ->
+        {:ok, res_body} = Jason.encode(%{player1: player1, player2: player2})
 
-    conn
-    |> put_resp_content_type("application/json")
-    |> send_resp(200, res_body)
+        conn
+        |> put_resp_content_type("application/json")
+        |> send_resp(200, res_body)
+
+      {:error, :match_not_found} ->
+        send_resp(conn, 404, "Not Found")
+    end
   end
 
   post "/matches" do
