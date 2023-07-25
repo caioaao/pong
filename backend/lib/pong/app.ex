@@ -12,8 +12,6 @@ defmodule Pong.App do
           port: 4000
         ]
       ),
-      {DynamicSupervisor, name: Pong.Core.Match.ServerSupervisor, strategy: :one_for_one},
-      Pong.Core.Match.Registry.child_spec([]),
       Pong.Core.Match.Registry.V2.child_spec([])
     ]
 
