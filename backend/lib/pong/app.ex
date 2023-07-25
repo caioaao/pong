@@ -9,7 +9,7 @@ defmodule Pong.App do
         plug: Pong.Api.Http.Router,
         options: [
           dispatch: dispatch(),
-          port: 4000
+          port: (System.get_env("PORT") || "4000") |> String.to_integer()
         ]
       ),
       Pong.Core.Match.Registry.V2.child_spec([])
