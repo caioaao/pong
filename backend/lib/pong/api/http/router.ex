@@ -21,6 +21,15 @@ defmodule Pong.Api.Http.Router do
     send_resp(conn, 200, "Ok")
   end
 
+  get "/matches/:match_id/players" do
+    {_, _, %{player1: player1, player2: player2}} = MatchRegistry.lookup(match_id)
+    {:ok, res_body} = Jason.encode(%{player1: player1, player2: player2})
+
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(200, res_body)
+  end
+
   post "/matches" do
     case conn.body_params do
       %{"player1" => player1, "player2" => player2} ->
@@ -28,7 +37,6 @@ defmodule Pong.Api.Http.Router do
 
         conn
         |> put_resp_content_type("application/json")
-        |> put_resp_header("Access-Control-Allow-Origin", "*")
         |> send_resp(200, ~s({"match_id":"#{match_id}"}))
 
       _ ->
