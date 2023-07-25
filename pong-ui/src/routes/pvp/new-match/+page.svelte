@@ -59,7 +59,4 @@
 		font-size: 2rem;
 		margin-top: 20px;
 	}
-
-	.error {
-	}
 </style>

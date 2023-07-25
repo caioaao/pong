@@ -8,15 +8,16 @@
 	import { connectToBackend } from '$lib/ws';
 	import pauseIconURL from '$lib/assets/pause-icon.svg';
 	import { matchState, score } from './match-state-store';
+	import { PUBLIC_BACKEND_WS_URL } from '$env/static/public';
 
-	export let websocketURL = 'ws://localhost:4000/ws/dummy';
+	export let websocketPath = '/ws/dummy';
 
 	let socket: WebSocket;
 
 	$: isPaused = $matchState?.state === 'paused';
 
 	onMount(() => {
-		const openingSocket = connectToBackend(websocketURL);
+		const openingSocket = connectToBackend(`${PUBLIC_BACKEND_WS_URL}${websocketPath}`);
 		openingSocket.addEventListener('open', () => {
 			socket = openingSocket;
 		});
