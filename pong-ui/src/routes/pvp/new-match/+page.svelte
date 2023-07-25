@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { PUBLIC_BACKEND_URL } from '$env/static/public';
+	import { createMatch } from '$lib/api';
 
 	let player1: string;
 	let player2: string;
@@ -12,13 +12,8 @@
 		if (isSubmitting) return;
 		isSubmitting = true;
 		try {
-			const res = await fetch(`${PUBLIC_BACKEND_URL}/matches`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ player1, player2 })
-			});
-			const { match_id } = await res.json();
-			goto(`new-match/created?match_id=${match_id}&player1=${player1}&player2=${player2}`);
+			const { matchID } = await createMatch(player1, player2);
+			goto(`join-match/${matchID}`);
 		} catch {
 			submissionErr = 'Something went wrong when creating the match. Try again';
 			isSubmitting = false;
