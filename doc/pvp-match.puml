@@ -1,0 +1,25 @@
+@startuml
+participant Player
+participant RestServer
+participant WebSocketHandler
+participant MatchRegistry
+participant MatchServer
+participant MatchBroadcaster
+
+activate MatchRegistry
+Player -> RestServer : POST /matches
+RestServer -> MatchRegistry : create_match
+MatchRegistry -> MatchServer : spawn child
+activate MatchServer
+        MatchServer -> MatchBroadcaster : spawn child
+        activate MatchBroadcaster
+                MatchRegistry --> RestServer : {match_id}
+                RestServer --> Player : {match_id}
+                Player -> WebSocketHandler : {connect, match_id, Player}
+                activate WebSocketHandler
+                        WebSocketHandler -> MatchBroadcaster : subscribe
+                        WebSocketHandler -> MatchServer : join_match
+                                ...
+                                MatchBroadcaster -> WebSocketHandler : {update, match_id, state}
+                                WebSocketHandler -> Player : {update, match_id, state}
+                        @enduml
