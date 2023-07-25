@@ -13,7 +13,7 @@
 		isSubmitting = true;
 		try {
 			const { matchID } = await createMatch(player1, player2);
-			goto(`join-match/${matchID}`);
+			goto(`/pvp/join-match/${matchID}`);
 		} catch {
 			submissionErr = 'Something went wrong when creating the match. Try again';
 			isSubmitting = false;
@@ -28,9 +28,9 @@
 	</p>
 {/if}
 <form on:submit|preventDefault={submitForm}>
-	<label for="player1">Your name</label>
+	<label for="player1">Player 1</label>
 	<input type="text" id="player1" name="player1" bind:value={player1} />
-	<label for="player1">Your friend's name</label>
+	<label for="player2">Player 2</label>
 	<input type="text" id="player2" name="player2" bind:value={player2} />
 	<button type="submit" disabled={isSubmitting || !player1 || !player2 || player1 === player2}>
 		Start!
