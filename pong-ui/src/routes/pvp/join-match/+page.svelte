@@ -14,7 +14,6 @@
 		width: 600px;
 		display: flex;
 		flex-direction: column;
-		font-size: 1.5rem;
 	}
 	h1 {
 		margin-bottom: 20px;
@@ -22,10 +21,12 @@
 
 	label {
 		text-align: left;
+		font-size: 1.5rem;
 	}
 
 	input {
 		line-height: 3rem;
+		font-size: 1.5rem;
 		font-size: 2rem;
 		margin-bottom: 20px;
 		width: 100%;
