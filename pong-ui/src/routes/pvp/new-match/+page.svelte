@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { PUBLIC_BACKEND_URL } from '$env/static/public';
+
 	let player1: string;
 	let player2: string;
 
@@ -10,7 +12,7 @@
 		if (isSubmitting) return;
 		isSubmitting = true;
 		try {
-			const res = await fetch('http://localhost:4000/matches', {
+			const res = await fetch(`${PUBLIC_BACKEND_URL}/matches`, {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ player1, player2 })
