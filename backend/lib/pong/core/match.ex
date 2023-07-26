@@ -53,7 +53,7 @@ defmodule Pong.Core.Match do
   end
 
   @spec create() :: created()
-  def create(millis_until_timeout \\ 60000) do
+  def create(millis_until_timeout \\ 60_000) do
     %{
       state: :created,
       millis_left_until_timeout: millis_until_timeout,
@@ -153,5 +153,19 @@ defmodule Pong.Core.Match do
   @spec unpause(paused()) :: in_progress()
   def unpause(state) do
     state[:prev_state]
+  end
+
+  @spec move_player_pad(in_progress(), Player.id(), :left | :right) :: in_progress()
+  def move_player_pad(state, player_id, direction) do
+    pad_key =
+      case player_id do
+        :player1 -> :player1_pad
+        :player2 -> :player2_pad
+      end
+
+    case direction do
+      :left -> Map.update!(state, pad_key, &PlayerPad.move_left(&1, state[:field]))
+      :right -> Map.update!(state, pad_key, &PlayerPad.move_right(&1, state[:field]))
+    end
   end
 end

@@ -1,4 +1,8 @@
 defmodule Pong.WireSchema.Json.Match do
+  @moduledoc """
+  Contracts and marshaling of match state.
+  """
+
   @type xy() :: %{x: number(), y: number()}
 
   @type ball() :: %{

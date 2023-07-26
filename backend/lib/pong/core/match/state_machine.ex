@@ -3,7 +3,7 @@ defmodule Pong.Core.Match.StateMachine do
   Implements state machine and transitions for the game. Uses the mathematical
   definition explained in erlang's gen_statem docs[1]:
 
-  State(S) x Event(E) -> Actions(A), State(S') 
+  State(S) x Event(E) -> Actions(A), State(S')
 
   Where processing an event E with the current state S results in the actions A
   taken to transform the state into S'.
@@ -108,17 +108,11 @@ defmodule Pong.Core.Match.StateMachine do
   end
 
   def process_event(%{state: :in_progress} = state, {:player_request, :move_pad_left, player}) do
-    case player do
-      :player1 -> Map.update!(state, :player1_pad, &PlayerPad.move_left(&1))
-      :player2 -> Map.update!(state, :player2_pad, &PlayerPad.move_left(&1))
-    end
+    Match.move_player_pad(state, player, :left)
   end
 
   def process_event(%{state: :in_progress} = state, {:player_request, :move_pad_right, player}) do
-    case player do
-      :player1 -> Map.update!(state, :player1_pad, &PlayerPad.move_right(&1))
-      :player2 -> Map.update!(state, :player2_pad, &PlayerPad.move_right(&1))
-    end
+    Match.move_player_pad(state, player, :right)
   end
 
   ######################################

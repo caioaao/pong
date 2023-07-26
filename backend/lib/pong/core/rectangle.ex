@@ -40,14 +40,4 @@ defmodule Pong.Core.Rectangle do
   def move(rect, vec) do
     update_in(rect, [:center], &Vector.add(&1, vec))
   end
-
-  @spec ensure_inside_viewport(t()) :: t()
-  def ensure_inside_viewport(rect) do
-    update_in(rect, [:center], fn {x, y} ->
-      {
-        x |> min(Viewport.width() - rect[:width] / 2) |> max(rect[:width] / 2),
-        y |> min(Viewport.height() - rect[:height] / 2) |> max(rect[:height] / 2)
-      }
-    end)
-  end
 end

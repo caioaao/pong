@@ -24,8 +24,12 @@ defmodule Pong.Core.Match.StateMachineTest do
     ]
 
     expected_states = [
-      %{state: :created, millis_left_until_timeout: 59990, players_ready: %MapSet{}},
-      %{state: :created, millis_left_until_timeout: 59990, players_ready: MapSet.new([:player2])},
+      %{state: :created, millis_left_until_timeout: 59_990, players_ready: %MapSet{}},
+      %{
+        state: :created,
+        millis_left_until_timeout: 59_990,
+        players_ready: MapSet.new([:player2])
+      },
       %{
         state: :starting,
         millis_left_until_start: 3000

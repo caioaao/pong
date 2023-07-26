@@ -35,8 +35,8 @@ defmodule Pong.Core.MatchTest do
     test "does not reset pads" do
       match_before_score =
         Match.start()
-        |> Map.update!(:player1_pad, &PlayerPad.move_left/1)
-        |> Map.update!(:player2_pad, &PlayerPad.move_right/1)
+        |> Match.move_player_pad(:player1, :left)
+        |> Match.move_player_pad(:player2, :left)
 
       match_after_score =
         match_before_score

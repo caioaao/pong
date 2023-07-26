@@ -4,6 +4,8 @@ FROM elixir:1.15.4-otp-25-alpine AS build
 ADD . /app
 WORKDIR /app
 
+ENV MIX_ENV=prod
+
 # Install package managers
 RUN mix local.hex --force
 RUN mix local.rebar --force
@@ -13,7 +15,6 @@ RUN mix deps.get
 
 # Build release
 
-ENV MIX_ENV=prod
 RUN mix release
 
 FROM elixir:1.15.4-otp-25-alpine

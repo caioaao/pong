@@ -7,7 +7,6 @@ defmodule Pong.Api.Http.WebSocket.MatchSubscription do
 
   @impl true
   def init(ws_pid) do
-    IO.inspect(ws_pid)
     {:ok, ws_pid}
   end
 
