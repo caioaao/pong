@@ -1,5 +1,4 @@
-# Use the latest Elixir image from Docker Hub
-FROM elixir:1.15.4-otp-25
+FROM elixir:1.15.4-otp-25-alpine AS build
 
 # Add current Mix project
 ADD . /app
@@ -12,5 +11,16 @@ RUN mix local.rebar --force
 # Fetch dependencies
 RUN mix deps.get
 
-# Compile and run the app
-ENTRYPOINT ["mix", "run", "--no-halt"]
+# Build release
+
+ENV MIX_ENV=prod
+RUN mix release
+
+FROM elixir:1.15.4-otp-25-alpine
+
+ENV MIX_ENV=prod
+EXPOSE 4000
+
+COPY --from=build /app/_build/prod/rel/pong /opt/pong
+
+ENTRYPOINT ["/opt/pong/bin/pong", "start"]
